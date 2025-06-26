@@ -1,5 +1,5 @@
 {
-  "name": "expressjs-backend-template",
+  "name": "limousine-backend",
   "version": "1.0.0",
   "main": "dist/server.js",
   "description": "A generic ExpressJS backend template with user management, authentication, file upload, and notification system",
