@@ -4,7 +4,7 @@ import {
     InternalServerError,
     NotFoundError,
 } from "../helpers/apiError";
-import { BookingService, CustomerService } from "../services";
+import { BookingService, CustomerService, DriverService } from "../services";
 
 export async function submitRideRequest(
     req: Request,
@@ -84,5 +84,123 @@ export async function findById(
         return res.json({ status: "success", data });
     } catch (error) {
         return next(new NotFoundError("No Record Found", error));
+    }
+}
+
+export async function assignDriverAndSetPrice(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId, driverId, finalPrice } = req["validData"];
+
+        // Validate booking exists and is in correct status
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        if (booking.status !== "Pending") {
+            return next(new BadRequestError("Booking must be in 'Pending' status to assign driver"));
+        }
+
+        // Validate driver exists and is available
+        const driver = await DriverService.findById(driverId);
+        if (!driver) {
+            return next(new NotFoundError("Driver not found"));
+        }
+
+        if (driver.status !== "available") {
+            return next(new BadRequestError("Driver is not available"));
+        }
+
+        // Validate price is positive
+        if (finalPrice <= 0) {
+            return next(new BadRequestError("Final price must be greater than 0"));
+        }
+
+        // Update booking with driver assignment and price
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            driverId,
+            finalPrice,
+            status: "Awaiting-Acceptance"
+        });
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
+export async function acceptRideQuote(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId } = req["validData"];
+
+        // Validate booking exists and is in correct status
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        if (booking.status !== "Awaiting-Acceptance") {
+            return next(new BadRequestError("Booking must be in 'Awaiting-Acceptance' status to accept quote"));
+        }
+
+        // Update booking status to Assigned
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            status: "Assigned"
+        });
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
+export async function cancelBooking(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId } = req["validData"];
+
+        // Validate booking exists
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        // Check if booking can be cancelled (not already completed)
+        if (booking.status === "Completed") {
+            return next(new BadRequestError("Cannot cancel a completed booking"));
+        }
+
+        if (booking.status === "Cancelled") {
+            return next(new BadRequestError("Booking is already cancelled"));
+        }
+
+        // Update booking status to Cancelled
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            status: "Cancelled"
+        });
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
     }
 }

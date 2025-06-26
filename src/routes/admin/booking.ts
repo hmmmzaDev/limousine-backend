@@ -3,6 +3,7 @@ const router = express.Router();
 import {
     fetchBookings,
     findById,
+    assignDriverAndSetPrice,
 } from "../../controllers/booking";
 import { validateKeyInputs } from "../../middlewares/validate";
 
@@ -213,6 +214,113 @@ router.post(
         key: "body",
     }),
     findById,
+);
+
+/**
+ * @openapi
+ * /assignDriverAndSetPrice:
+ *   post:
+ *     summary: Assign driver and set price for a booking
+ *     tags:
+ *       - Admin - Booking
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - bookingId
+ *               - driverId
+ *               - finalPrice
+ *             properties:
+ *               bookingId:
+ *                 type: string
+ *                 example: "67bf1f5867e753b86463b5d1"
+ *               driverId:
+ *                 type: string
+ *                 example: "67bf1f5867e753b86463b5d2"
+ *               finalPrice:
+ *                 type: number
+ *                 example: 75.50
+ *     responses:
+ *       '200':
+ *         description: Driver assigned and price set successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "67bf1f5867e753b86463b5d1"
+ *                     customerId:
+ *                       type: object
+ *                     driverId:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           example: "67bf1f5867e753b86463b5d2"
+ *                         name:
+ *                           type: string
+ *                           example: "Jane Smith"
+ *                         status:
+ *                           type: string
+ *                           example: "available"
+ *                     pickupLocation:
+ *                       type: string
+ *                       example: "123 Main Street, Downtown"
+ *                     dropoffLocation:
+ *                       type: string
+ *                       example: "456 Oak Avenue, Uptown"
+ *                     rideTime:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-12-25T15:30:00.000Z"
+ *                     finalPrice:
+ *                       type: number
+ *                       example: 75.50
+ *                     status:
+ *                       type: string
+ *                       example: "Awaiting-Acceptance"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-01T12:00:00.000Z"
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-01T12:00:00.000Z"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "Booking must be in 'Pending' status to assign driver"
+ *       '404':
+ *         description: Booking or driver not found
+ */
+router.post(
+    "/assignDriverAndSetPrice",
+    validateKeyInputs({
+        inputArr: ["bookingId", "driverId", "finalPrice"],
+        key: "body",
+    }),
+    assignDriverAndSetPrice,
 );
 
 export default router;
