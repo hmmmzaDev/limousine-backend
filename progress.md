@@ -34,14 +34,14 @@ This document tracks the development progress of the core business logic, buildi
 
 ---
 
-### [ ] Module 3: Driver Management (Admin-Only)
+### [✅] Module 3: Driver Management (Admin-Only)
 
 **Objective:** Implement admin controls for adding and managing drivers.
 
-*   `[ ]` **task 3.1:** Implement the `Add Driver` functionality for the admin.
-*   `[ ]` **task 3.2:** Implement the `Fetch All Drivers` functionality for the admin.
-*   `[ ]` **task 3.3:** Implement the `Edit Driver` functionality for the admin to update a driver's profile.
-*   `[ ]` **task 3.4:** Implement the `Delete Driver` functionality for the admin to remove a driver.
+*   `[✅]` **task 3.1:** Implement the `Add Driver` functionality for the admin.
+*   `[✅]` **task 3.2:** Implement the `Fetch All Drivers` functionality for the admin.
+*   `[✅]` **task 3.3:** Implement the `Edit Driver` functionality for the admin to update a driver's profile.
+*   `[✅]` **task 3.4:** Implement the `Delete Driver` functionality for the admin to remove a driver.
 
 ---
 
