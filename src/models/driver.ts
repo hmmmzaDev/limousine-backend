@@ -1,0 +1,67 @@
+import mongoose, { Schema, Document } from "mongoose";
+import autopopulate from "mongoose-autopopulate";
+
+interface IDriver extends Document {
+    id: string;
+    name: string;
+    vehicleDetails: {
+        model: string;
+        licensePlate: string;
+    };
+    status: "available" | "on_trip" | "offline";
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const DriverSchema = new Schema<IDriver>(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        vehicleDetails: {
+            model: {
+                type: String,
+                required: true,
+            },
+            licensePlate: {
+                type: String,
+                required: true,
+            },
+        },
+        status: {
+            type: String,
+            enum: ["available", "on_trip", "offline"],
+            default: "available",
+            required: true,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now,
+        },
+    },
+    {
+        collection: "Driver",
+        timestamps: true,
+    },
+);
+
+DriverSchema.plugin(autopopulate);
+DriverSchema.virtual("id").get(function () {
+    return this._id.toString();
+});
+DriverSchema.set("toJSON", {
+    virtuals: true,
+    versionKey: false,
+    transform: function (doc, ret) {
+        delete ret._id;
+        return ret;
+    },
+});
+
+const DriverModel = mongoose.model<IDriver>("Driver", DriverSchema);
+export default DriverModel;

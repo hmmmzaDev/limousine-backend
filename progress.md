@@ -11,15 +11,15 @@ This document tracks the development progress of the core business logic, buildi
 
 ---
 
-### [ ] Module 1: Project Setup and Database Schema
+### [✅] Module 1: Project Setup and Database Schema
 
 **Objective:** Initialize the backend project and define the core data structures in the database.
 
 *   `[✅]` **task 1.1:** Initialize a new Node.js/Express.js project with TypeScript.
 *   `[✅]` **task 1.2:** Install and configure Mongoose to connect to a MongoDB database.
-*   `[ ]` **task 1.3:** Create the `Customer` schema (`models/Customer.ts`) with `name` and `email` fields.
-*   `[ ]` **task 1.4:** Create the `Driver` schema (`models/Driver.ts`) with `name`, `vehicleDetails`, and `status` fields.
-*   `[ ]` **task 1.5:** Create the `Booking` schema (`models/Booking.ts`) with all required fields (`customerId`, `driverId`, `locations`, `rideTime`, `finalPrice`, `status`) and references.
+*   `[✅]` **task 1.3:** Create the `Customer` schema (`models/Customer.ts`) with `name` and `email` fields.
+*   `[✅]` **task 1.4:** Create the `Driver` schema (`models/Driver.ts`) with `name`, `vehicleDetails`, and `status` fields.
+*   `[✅]` **task 1.5:** Create the `Booking` schema (`models/Booking.ts`) with all required fields (`customerId`, `driverId`, `locations`, `rideTime`, `finalPrice`, `status`) and references.
 
 ---
 

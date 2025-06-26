@@ -9,6 +9,9 @@ import {
 // import the user and notification models
 import UserModel from "../models/user";
 import NotificationModel from "../models/notification";
+import CustomerModel from "../models/customer";
+import DriverModel from "../models/driver";
+import BookingModel from "../models/booking";
 
 function main<T extends Document>(Model: Model<T>) {
   function count(filter: FilterQuery<T> = {}) {
@@ -92,3 +95,6 @@ function main<T extends Document>(Model: Model<T>) {
 
 export const UserService = main(UserModel);
 export const NotificationService = main(NotificationModel);
+export const CustomerService = main(CustomerModel);
+export const DriverService = main(DriverModel);
+export const BookingService = main(BookingModel);
