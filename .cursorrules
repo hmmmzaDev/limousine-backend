@@ -1,0 +1,273 @@
+# ExpressJS Backend Template - Cursor Rules
+
+## Project Overview
+This is a generic ExpressJS backend template with TypeScript, MongoDB, user management, authentication, file upload, and notification system. Follow these rules to maintain consistency and best practices.
+
+## Project Orchestration System
+
+### Core Project Files
+This template uses a dual-file orchestration system for project management:
+
+#### `requirements.md` (Static Overview)
+- **Purpose**: Static file containing project overview and end-result requirements
+- **Content**: High-level project description, goals, and expected deliverables
+- **Usage**: Reference for understanding project scope and final objectives
+- **AI Behavior**: Read for context but never modify this file
+
+#### `progress.md` (Dynamic Backbone)
+- **Purpose**: Single point of guidance for AI agents - the project's dynamic backbone
+- **Structure**: Organized into modules and atomic tasks with unique identifiers
+- **Format**:
+  - Modules: Numbered (e.g., Module 1, Module 2, Module 3)
+  - Tasks: Formatted as "task X.Y" (e.g., task 4.3 = 3rd task of 4th module)
+- **Ordering**: Arranged in implementation order (first things first)
+- **AI Behavior**: Always follow this file as the primary guidance system
+
+### Task Management Rules
+
+#### Task Identification System
+- **Module Format**: Sequential numbering (Module 1, Module 2, etc.)
+- **Task Format**: "task X.Y" where X = module number, Y = task number within module
+- **Example**: "task 4.3" means the 3rd task of the 4th module
+- **Atomicity**: Each task should be a single, implementable unit of work
+
+#### AI Implementation Workflow
+1. **Always check progress.md first** before starting any work
+2. **Identify the current task** that needs to be implemented
+3. **Read the full task description** and understand requirements
+4. **Check dependencies** - ensure prerequisite tasks are completed
+5. **Implement only the current task** - do not jump ahead
+6. **Update progress.md** after completing each task
+7. **Mark completed tasks** with appropriate status indicators
+
+#### Task Status Management
+- **Pending**: `[ ]` - Task not started
+- **In Progress**: `[🔄]` - Currently being worked on
+- **Completed**: `[✅]` - Task finished and verified
+- **Blocked**: `[🚫]` - Task cannot proceed (note reason)
+- **Skipped**: `[⏭️]` - Task intentionally skipped (note reason)
+
+### Progress Tracking Rules
+
+#### Before Starting Work
+- Always read `requirements.md` for project context
+- Review `progress.md` to understand current state
+- Identify the next task in sequence
+- Ensure prerequisites are met
+
+#### During Implementation
+- Focus only on the current task scope
+- Do not implement features beyond the current task
+- Ask for clarification if task requirements are unclear
+- Update task status to "In Progress" when starting
+
+#### After Completing Tasks
+- Mark task as completed in `progress.md`
+- Add brief completion notes if helpful
+- Identify and prepare for the next task
+- Update any dependencies or blockers
+
+### Module Organization Guidelines
+
+#### Module Structure
+- Each module should represent a logical feature or system component
+- Modules should be ordered by dependency and implementation priority
+- Tasks within modules should build upon each other logically
+- Cross-module dependencies should be clearly noted
+
+#### Task Granularity
+- Tasks should be atomic and completable in a single session
+- Each task should have clear, measurable completion criteria
+- Avoid tasks that are too broad or too granular
+- Include specific implementation details and acceptance criteria
+
+### AI Behavior Guidelines
+
+#### Reading Project Files
+- Always check both files at the start of each session
+- Understand project context from `requirements.md`
+- Follow implementation plan from `progress.md`
+- Respect the established task order and priorities
+
+#### Implementation Approach
+- Implement exactly what the current task specifies
+- Do not add "bonus" features or improvements outside task scope
+- Follow the existing codebase patterns and architecture
+- Maintain consistency with completed tasks
+
+#### Communication
+- Reference specific task IDs when discussing work (e.g., "Implementing task 3.2")
+- Ask for clarification if task requirements are ambiguous
+- Report completion status and any issues encountered
+- Suggest updates to progress.md if requirements change
+
+### Integration with Existing Rules
+- All existing architecture patterns still apply
+- Service layer pattern must be followed for all new features
+- OpenAPI documentation required for all new endpoints
+- Validation middleware required for all new routes
+- Error handling patterns must be consistent
+
+## Architecture Patterns
+
+### Service Layer Pattern
+- Always use the service layer for database operations
+- Import services from `../services` and use the generic CRUD methods
+- Example: `UserService.findById(id)`, `NotificationService.create(data)`
+- Never directly import or use models in controllers
+
+### Controller Structure
+- Controllers should only handle HTTP logic and business rules
+- Always use `req["validData"]` for validated input data
+- Return consistent response format: `{ status: "success/error", data: {...} }`
+- Use proper error handling with custom error classes from `../helpers/apiError`
+- the response in the controllers must always be in the return statement
+
+### Route Organization
+- Admin routes go in `src/routes/admin/`
+- User routes go in `src/routes/user/`
+- Always use validation middleware `validateKeyInputs` before controller functions
+- Include comprehensive OpenAPI documentation for all endpoints
+
+## Code Style & Conventions
+
+### TypeScript
+- Use strict typing - avoid `any` unless absolutely necessary
+- Define interfaces for all data structures
+- Use proper imports with path aliases: `@/` for src directory
+- Always export default for single exports, named exports for multiple
+
+### Error Handling
+- Use custom error classes: `BadRequestError`, `NotFoundError`, `InternalServerError`, `UnauthorizedError`
+- Always call `next(error)` instead of throwing errors in controllers
+- Handle async errors properly with try-catch blocks
+
+### Validation
+- Use `validateKeyInputs` middleware for all route parameters (whichever route needs to have validated fields, either from [body, query, params])
+- Prefix optional fields with `-` in inputArr: `["-optionalField"]`
+- Validate in this order: required fields first, then optional fields
+
+### Database
+- Use the service layer pattern - never directly access models in controllers
+- Always use the generic CRUD methods from services
+- Use proper mongoose schema patterns with autopopulate
+- Include virtual `id` field and proper JSON transformation
+
+## File Structure Rules
+
+### Models (`src/models/`)
+- Follow the existing pattern: interface → schema → model export
+- Always include autopopulate plugin (wherever necessary)
+- Use proper collection naming
+- Include virtual ID and JSON transformation
+
+### Controllers (`src/controllers/`)
+- One controller per entity type
+- Export named functions (not default export)
+- Use consistent parameter destructuring from `req["validData"]`
+- Include proper TypeScript typing for req, res, next
+
+### Routes (`src/routes/`)
+- Organize by user role: `/admin` and `/user`
+- Use express Router pattern
+- Include OpenAPI documentation for every endpoint
+- Use consistent route naming: `/addRecord`, `/updateRecord`, `/deleteById`, etc.
+
+### Helpers (`src/helpers/`)
+- Keep utility functions pure and reusable
+- Export named functions
+- Include proper TypeScript types
+
+## API Design Standards
+
+### Endpoints
+- Use POST for create/update/delete operations (following existing pattern)
+- Use GET for read operations
+- Consistent naming: `addRecord`, `updateRecord`, `deleteById`, `getAll`, `getById`, `getOne`
+- Always include recordId parameter for update/delete operations
+
+### Responses
+- Always return `{ status: "success", data: {...} }` for success (wherever applicable)
+- Let error middleware handle error responses
+- Include proper HTTP status codes
+- the response in the controllers must always be in the return statement
+
+### Documentation
+- Every route must have OpenAPI documentation
+- Include proper tags: `Admin - Entity`, `User - Entity`, `Authentication`
+- Document all parameters, request bodies, and responses
+- Use realistic examples in documentation
+
+## Security Rules
+
+### Authentication
+- Admin routes use `loginAdmin` controller
+- User routes use `loginUser` controller
+- Always validate role-based access in routes
+- Use bcrypt for password hashing with proper salt
+
+### Input Validation
+- Never trust user input - always validate with middleware
+- Use `validateKeyInputs` for all routes
+- Sanitize file uploads properly
+- Validate file types and sizes for uploads
+
+## Extension Guidelines
+
+### Adding New Features
+1. Create model in `src/models/` following existing patterns
+2. Add service export in `src/services/index.ts`
+3. Create controller in `src/controllers/`
+4. Add routes in appropriate directory (`admin` or `user`)
+5. Update route index files to register new routes
+6. Include comprehensive OpenAPI documentation
+
+### Database Operations
+- Always use transactions for multi-step operations
+- Use proper error handling for database operations
+- Include proper indexes in schema definitions
+- Use mongoose autopopulate for references
+
+## Import Conventions
+```typescript
+// External libraries first
+import express from "express";
+import bcrypt from "bcrypt";
+
+// Relative imports
+import { validateKeyInputs } from "../middlewares/validate";
+```
+
+## Forbidden Patterns
+- ❌ Direct model imports in controllers
+- ❌ Hardcoded connection strings or API keys
+- ❌ Missing error handling in async functions
+- ❌ Routes without validation middleware
+- ❌ Missing OpenAPI documentation
+- ❌ Using `any` type without justification
+- ❌ Mixing different response formats
+- ❌ sending response without the `return` statement
+
+## Environment Variables
+- Always use environment variables for sensitive data
+- Use dotenv for configuration
+- commit .env files in the git
+- Document required environment variables in README
+
+## File Upload Rules
+- Use Cloudinary integration from `src/helpers/upload.ts`
+- Validate file types and sizes
+- Use memory storage for temporary processing
+- Include proper error handling for upload failures
+
+## Notification System (ONLY if necessary, otherwise, use this as a template for adding `CRUD` of other entities). You can safely remove this if- it is not necessary according to the requirements, AND, you have already made `CRUD` for another entity (you can then use that as the template for the `CRUD`)
+- IMPORTANT! remove this module entirely if it is not used. it is initially kept as a template for the `CRUD` of other entities
+- Use NotificationService for all notification operations
+- Include proper notification types: `task_assigned`, `location_error`, `payment_processed`, `system`
+- Always associate notifications with users
+
+## Performance Guidelines
+- Use database connection caching (already implemented)
+- Implement proper pagination for list endpoints
+- Use appropriate database indexes
+- Minimize database queries with proper population
