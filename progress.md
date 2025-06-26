@@ -23,14 +23,14 @@ This document tracks the development progress of the core business logic, buildi
 
 ---
 
-### [ ] Module 2: Customer Management
+### [✅] Module 2: Customer Management
 
 **Objective:** Implement functionalities for customer registration and admin management.
 
-*   `[ ]` **task 2.1:** Implement the `Customer Signup` functionality for customers to register themselves.
-*   `[ ]` **task 2.2:** Implement the `Fetch All Customers` functionality for the admin.
-*   `[ ]` **task 2.3:** Implement the `Edit Customer` functionality for the admin to update a customer's profile.
-*   `[ ]` **task 2.4:** Implement the `Delete Customer` functionality for the admin to remove a customer profile.
+*   `[✅]` **task 2.1:** Implement the `Customer Signup` functionality for customers to register themselves.
+*   `[✅]` **task 2.2:** Implement the `Fetch All Customers` functionality for the admin.
+*   `[✅]` **task 2.3:** Implement the `Edit Customer` functionality for the admin to update a customer's profile.
+*   `[✅]` **task 2.4:** Implement the `Delete Customer` functionality for the admin to remove a customer profile.
 
 ---
 
