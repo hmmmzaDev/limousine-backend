@@ -6,8 +6,7 @@ import {
   QueryOptions,
 } from "mongoose";
 
-// import the user and notification models
-import UserModel from "../models/user";
+// import the models
 import NotificationModel from "../models/notification";
 import CustomerModel from "../models/customer";
 import DriverModel from "../models/driver";
@@ -93,7 +92,6 @@ function main<T extends Document>(Model: Model<T>) {
   };
 }
 
-export const UserService = main(UserModel);
 export const NotificationService = main(NotificationModel);
 export const CustomerService = main(CustomerModel);
 export const DriverService = main(DriverModel);

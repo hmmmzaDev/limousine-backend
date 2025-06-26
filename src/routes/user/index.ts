@@ -1,7 +1,6 @@
 import { Express } from "express";
 
-// import the user routes
-import user from "./user";
+// import the customer routes
 import customer from "./customer";
 
 export default function Router(app: Express, commonRoute = "/user") {
