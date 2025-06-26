@@ -53,14 +53,14 @@ This document tracks the development progress of the core business logic, buildi
 *   `[✅]` **task 4.2:** Implement the `Fetch Bookings` functionality for the admin, with filtering by `status` (especially 'Pending').
 *   `[✅]` **task 4.3:** Implement the `Assign Driver and Set Price` functionality for the admin, changing the booking status to `Awaiting-Acceptance`.
 *   `[✅]` **task 4.4:** Implement the `Accept Ride Quote` functionality for the customer, changing the booking status to `Assigned`.
-*   `[✅]` **task 4.5:** Implement the `Cancel Booking` functionality for the customer, changing the booking status to `Cancelled`.
+*   `[✅]`, **task 4.5:** Implement the `Cancel Booking` functionality for the customer, changing the booking status to `Cancelled`.
 
 ---
 
-### [ ] Module 5: Ride Execution Flow (Driver)
+### [✅] Module 5: Ride Execution Flow (Driver)
 
 **Objective:** Enable drivers to manage and execute their assigned rides.
 
-*   `[ ]` **task 5.1:** Implement the `Fetch Assigned Rides` functionality for a specific driver.
-*   `[ ]` **task 5.2:** Implement the `Update Ride Status` functionality for a driver to set the status to `En-Route`.
-*   `[ ]` **task 5.3:** Enhance the `Update Ride Status` functionality for a driver to set the status to `Completed`.
+*   `[✅]` **task 5.1:** Implement the `Fetch Assigned Rides` functionality for a specific driver.
+*   `[✅]` **task 5.2:** Implement the `Update Ride Status` functionality for a driver to set the status to `En-Route`.
+*   `[✅]` **task 5.3:** Enhance the `Update Ride Status` functionality for a driver to set the status to `Completed`.

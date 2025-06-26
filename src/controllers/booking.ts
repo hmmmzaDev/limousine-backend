@@ -204,3 +204,77 @@ export async function cancelBooking(
         return next(new BadRequestError(error.message));
     }
 }
+
+export async function fetchAssignedRides(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { driverId } = req["validData"];
+
+        // Validate driver exists
+        const driver = await DriverService.findById(driverId);
+        if (!driver) {
+            return next(new NotFoundError("Driver not found"));
+        }
+
+        // Fetch all bookings assigned to this driver
+        const assignedRides = await BookingService.findAll({
+            driverId: driverId,
+            status: { $in: ["Assigned", "En-Route"] } // Only show active rides
+        });
+
+        return res.json({
+            status: "success",
+            data: assignedRides,
+        });
+    } catch (error) {
+        return next(new NotFoundError("No Record Found", error));
+    }
+}
+
+export async function updateRideStatus(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId, newStatus } = req["validData"];
+
+        // Validate booking exists
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        // Validate status transitions
+        const validTransitions = {
+            "Assigned": ["En-Route"],
+            "En-Route": ["Completed"]
+        };
+
+        if (!validTransitions[booking.status] || !validTransitions[booking.status].includes(newStatus)) {
+            return next(new BadRequestError(`Cannot transition from '${booking.status}' to '${newStatus}'. Valid transitions from '${booking.status}': ${validTransitions[booking.status]?.join(", ") || "none"}`));
+        }
+
+        // Update booking status
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            status: newStatus
+        });
+
+        // If ride is completed, update driver status to available
+        if (newStatus === "Completed" && booking.driverId) {
+            await DriverService.updateById(booking.driverId.toString(), {
+                status: "available"
+            });
+        }
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
