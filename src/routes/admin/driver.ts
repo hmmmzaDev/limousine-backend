@@ -8,6 +8,7 @@ import {
     deleteById,
 } from "../../controllers/driver";
 import { validateKeyInputs } from "../../middlewares/validate";
+import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 
 /**
  * @openapi
@@ -100,6 +101,8 @@ import { validateKeyInputs } from "../../middlewares/validate";
  */
 router.post(
     "/addRecord",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["name", "email", "password", "vehicleDetails", "-status"],
         key: "body",
@@ -172,6 +175,8 @@ router.post(
  */
 router.post(
     "/getAll",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["-status"],
         key: "body",
@@ -243,6 +248,8 @@ router.post(
  */
 router.post(
     "/getById",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["id"],
         key: "body",
@@ -332,6 +339,8 @@ router.post(
  */
 router.post(
     "/updateRecord",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         key: "body",
         inputArr: [
@@ -383,6 +392,8 @@ router.post(
  */
 router.post(
     "/deleteById",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["recordId"],
         key: "body",

@@ -6,6 +6,7 @@ import {
     assignDriverAndSetPrice,
 } from "../../controllers/booking";
 import { validateKeyInputs } from "../../middlewares/validate";
+import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 
 /**
  * @openapi
@@ -105,6 +106,8 @@ import { validateKeyInputs } from "../../middlewares/validate";
  */
 router.post(
     "/getAll",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["-status"],
         key: "body",
@@ -209,6 +212,8 @@ router.post(
  */
 router.post(
     "/getById",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["id"],
         key: "body",
@@ -316,6 +321,8 @@ router.post(
  */
 router.post(
     "/assignDriverAndSetPrice",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["bookingId", "driverId", "finalPrice"],
         key: "body",

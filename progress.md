@@ -67,7 +67,7 @@ This document tracks the development progress of the core business logic, buildi
 
 ---
 
-### [ ] Module 6: Authentication & Authorization
+### [✅] Module 6: Authentication & Authorization
 
 **Objective:** Secure the platform with role-based access control.
 
@@ -75,7 +75,8 @@ This document tracks the development progress of the core business logic, buildi
 *   `[✅]` **task 6.2:** Implement separate `Customer Login` and `Driver Login` functionalities in their respective controllers that return JSON Web Tokens (JWT) on success.
 *   `[✅]` **task 6.3:** Create a JWT validation middleware to authenticate and attach user data to incoming requests.
 *   `[✅]` **task 6.4:** Create role-based authorization middleware (e.g., `isAdmin`, `isDriver`) to protect specific functionalities.
-*   `[ ]` **task 6.5:** Apply authentication and authorization middleware to all relevant functionalities across the application.
+*   `[✅]` **task 6.5:** Apply authentication and authorization middleware to all relevant functionalities across the application.
+*   `[✅]` **Security Enhancements:** Implemented resource ownership validation - customers and drivers can only access/modify their own resources.
 
 ---
 

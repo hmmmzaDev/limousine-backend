@@ -12,7 +12,13 @@ export async function submitRideRequest(
     next: NextFunction,
 ) {
     try {
-        const { customerId, pickupLocation, dropoffLocation, rideTime } = req["validData"];
+        const { pickupLocation, dropoffLocation, rideTime } = req["validData"];
+
+        // Get customer ID from authenticated user
+        const customerId = req.user?.userId;
+        if (!customerId) {
+            return next(new BadRequestError("Customer ID not found in authentication"));
+        }
 
         // Validate that customer exists
         const customer = await CustomerService.findById(customerId);
@@ -144,10 +150,21 @@ export async function acceptRideQuote(
     try {
         const { bookingId } = req["validData"];
 
+        // Get customer ID from authenticated user
+        const customerId = req.user?.userId;
+        if (!customerId) {
+            return next(new BadRequestError("Customer ID not found in authentication"));
+        }
+
         // Validate booking exists and is in correct status
         const booking = await BookingService.findById(bookingId);
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
+        }
+
+        // Verify ownership - booking must belong to the authenticated customer
+        if (booking.customerId.toString() !== customerId) {
+            return next(new BadRequestError("You can only accept quotes for your own bookings"));
         }
 
         if (booking.status !== "Awaiting-Acceptance") {
@@ -176,10 +193,21 @@ export async function cancelBooking(
     try {
         const { bookingId } = req["validData"];
 
+        // Get customer ID from authenticated user
+        const customerId = req.user?.userId;
+        if (!customerId) {
+            return next(new BadRequestError("Customer ID not found in authentication"));
+        }
+
         // Validate booking exists
         const booking = await BookingService.findById(bookingId);
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
+        }
+
+        // Verify ownership - booking must belong to the authenticated customer
+        if (booking.customerId.toString() !== customerId) {
+            return next(new BadRequestError("You can only cancel your own bookings"));
         }
 
         // Check if booking can be cancelled (not already completed)
@@ -211,7 +239,11 @@ export async function fetchAssignedRides(
     next: NextFunction,
 ) {
     try {
-        const { driverId } = req["validData"];
+        // Get driver ID from authenticated user
+        const driverId = req.user?.userId;
+        if (!driverId) {
+            return next(new BadRequestError("Driver ID not found in authentication"));
+        }
 
         // Validate driver exists
         const driver = await DriverService.findById(driverId);
@@ -242,10 +274,21 @@ export async function updateRideStatus(
     try {
         const { bookingId, newStatus } = req["validData"];
 
+        // Get driver ID from authenticated user
+        const driverId = req.user?.userId;
+        if (!driverId) {
+            return next(new BadRequestError("Driver ID not found in authentication"));
+        }
+
         // Validate booking exists
         const booking = await BookingService.findById(bookingId);
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
+        }
+
+        // Verify ownership - booking must be assigned to the authenticated driver
+        if (!booking.driverId || booking.driverId.toString() !== driverId) {
+            return next(new BadRequestError("You can only update status for rides assigned to you"));
         }
 
         // Validate status transitions

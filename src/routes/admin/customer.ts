@@ -7,6 +7,7 @@ import {
     deleteById,
 } from "../../controllers/customer";
 import { validateKeyInputs } from "../../middlewares/validate";
+import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 
 /**
  * @openapi
@@ -60,6 +61,8 @@ import { validateKeyInputs } from "../../middlewares/validate";
  */
 router.post(
     "/getAll",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: [],
         key: "body",
@@ -123,6 +126,8 @@ router.post(
  */
 router.post(
     "/getById",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["id"],
         key: "body",
@@ -195,6 +200,8 @@ router.post(
  */
 router.post(
     "/updateRecord",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         key: "body",
         inputArr: [
@@ -244,6 +251,8 @@ router.post(
  */
 router.post(
     "/deleteById",
+    authenticateToken,
+    requireAdmin,
     validateKeyInputs({
         inputArr: ["recordId"],
         key: "body",

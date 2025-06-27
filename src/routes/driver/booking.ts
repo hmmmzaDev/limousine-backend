@@ -5,26 +5,23 @@ import {
     updateRideStatus,
 } from "../../controllers/booking";
 import { validateKeyInputs } from "../../middlewares/validate";
+import { authenticateToken, requireDriver } from "../../middlewares/auth";
 
 /**
  * @openapi
  * /getAssignedRides:
  *   post:
- *     summary: Fetch assigned rides for a driver
+ *     summary: Fetch assigned rides for the authenticated driver
  *     tags:
  *       - Driver - Booking
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
- *       required: true
+ *       required: false
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - driverId
- *             properties:
- *               driverId:
- *                 type: string
- *                 example: "67bf1f5867e753b86463b5d1"
  *     responses:
  *       '200':
  *         description: Assigned rides fetched successfully
@@ -104,8 +101,10 @@ import { validateKeyInputs } from "../../middlewares/validate";
  */
 router.post(
     "/getAssignedRides",
+    authenticateToken,
+    requireDriver,
     validateKeyInputs({
-        inputArr: ["driverId"],
+        inputArr: [],
         key: "body",
     }),
     fetchAssignedRides,
@@ -118,6 +117,8 @@ router.post(
  *     summary: Update ride status (En-Route or Completed)
  *     tags:
  *       - Driver - Booking
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -199,6 +200,8 @@ router.post(
  */
 router.post(
     "/updateStatus",
+    authenticateToken,
+    requireDriver,
     validateKeyInputs({
         inputArr: ["bookingId", "newStatus"],
         key: "body",

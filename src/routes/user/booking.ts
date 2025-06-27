@@ -6,6 +6,7 @@ import {
     cancelBooking,
 } from "../../controllers/booking";
 import { validateKeyInputs } from "../../middlewares/validate";
+import { authenticateToken, requireCustomer } from "../../middlewares/auth";
 
 /**
  * @openapi
@@ -14,6 +15,8 @@ import { validateKeyInputs } from "../../middlewares/validate";
  *     summary: Submit a new ride request
  *     tags:
  *       - User - Booking
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -21,14 +24,10 @@ import { validateKeyInputs } from "../../middlewares/validate";
  *           schema:
  *             type: object
  *             required:
- *               - customerId
  *               - pickupLocation
  *               - dropoffLocation
  *               - rideTime
  *             properties:
- *               customerId:
- *                 type: string
- *                 example: "67bf1f5867e753b86463b5d1"
  *               pickupLocation:
  *                 type: string
  *                 example: "123 Main Street, Downtown"
@@ -54,11 +53,11 @@ import { validateKeyInputs } from "../../middlewares/validate";
  *                   type: object
  *                   properties:
  *                     id:
- *                       type: string
- *                       example: "67bf1f5867e753b86463b5d1"
- *                     customerId:
- *                       type: string
- *                       example: "67bf1f5867e753b86463b5d1"
+                  *                       type: string
+                 *                       example: "67bf1f5867e753b86463b5d1"
+                 *                     customerId:
+                 *                       type: object
+                 *                       description: "Automatically set from authenticated user"
  *                     driverId:
  *                       type: string
  *                       nullable: true
@@ -117,8 +116,10 @@ import { validateKeyInputs } from "../../middlewares/validate";
  */
 router.post(
     "/submitRequest",
+    authenticateToken,
+    requireCustomer,
     validateKeyInputs({
-        inputArr: ["customerId", "pickupLocation", "dropoffLocation", "rideTime"],
+        inputArr: ["pickupLocation", "dropoffLocation", "rideTime"],
         key: "body",
     }),
     submitRideRequest,
@@ -131,6 +132,8 @@ router.post(
  *     summary: Accept ride quote
  *     tags:
  *       - User - Booking
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -206,6 +209,8 @@ router.post(
  */
 router.post(
     "/acceptQuote",
+    authenticateToken,
+    requireCustomer,
     validateKeyInputs({
         inputArr: ["bookingId"],
         key: "body",
@@ -220,6 +225,8 @@ router.post(
  *     summary: Cancel booking
  *     tags:
  *       - User - Booking
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -297,6 +304,8 @@ router.post(
  */
 router.post(
     "/cancel",
+    authenticateToken,
+    requireCustomer,
     validateKeyInputs({
         inputArr: ["bookingId"],
         key: "body",
