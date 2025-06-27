@@ -5,6 +5,7 @@ interface ICustomer extends Document {
     id: string;
     name: string;
     email: string;
+    password: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -19,6 +20,11 @@ const CustomerSchema = new Schema<ICustomer>(
             type: String,
             required: true,
             unique: true,
+        },
+        password: {
+            type: String,
+            required: true,
+            select: false,
         },
         createdAt: {
             type: Date,

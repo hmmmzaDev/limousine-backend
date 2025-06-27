@@ -4,6 +4,8 @@ import autopopulate from "mongoose-autopopulate";
 interface IDriver extends Document {
     id: string;
     name: string;
+    email: string;
+    password: string;
     vehicleDetails: {
         model: string;
         licensePlate: string;
@@ -18,6 +20,16 @@ const DriverSchema = new Schema<IDriver>(
         name: {
             type: String,
             required: true,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        password: {
+            type: String,
+            required: true,
+            select: false,
         },
         vehicleDetails: {
             model: {

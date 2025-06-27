@@ -3,8 +3,11 @@ import {
     BadRequestError,
     InternalServerError,
     NotFoundError,
+    UnauthorizedError,
 } from "../helpers/apiError";
 import { CustomerService } from "../services";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function signup(
     req: Request,
@@ -12,16 +15,22 @@ export async function signup(
     next: NextFunction,
 ) {
     try {
-        const { name, email } = req["validData"];
+        const { name, email, password } = req["validData"];
         const existingCustomer = await CustomerService.findOne({
             email,
         });
         if (existingCustomer) {
             return next(new BadRequestError("Email already exists"));
         }
+
+        // Hash password
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(password, salt);
+
         const data = await CustomerService.create({
             name,
             email,
+            password: hashedPassword,
         });
         return res.json({
             status: "success",
@@ -107,5 +116,54 @@ export async function deleteById(
         });
     } catch (error) {
         return next(new InternalServerError(error.message, error));
+    }
+}
+
+export async function customerLogin(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    try {
+        const { email, password } = req["validData"];
+
+        // Find customer by email with password field
+        const customer = await CustomerService.findOne({ email }, { password: 1, name: 1, email: 1 });
+        if (!customer) {
+            return next(new UnauthorizedError("Invalid email or password"));
+        }
+
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(password, customer.password);
+        if (!isPasswordValid) {
+            return next(new UnauthorizedError("Invalid email or password"));
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            {
+                userId: customer._id,
+                email: customer.email,
+                name: customer.name,
+                userType: "customer",
+                role: "customer",
+            },
+            process.env.JWT_SECRET!,
+            { expiresIn: "24h" }
+        );
+
+        // Remove password from response
+        const customerData = customer.toObject();
+        delete customerData.password;
+
+        return res.status(200).json({
+            status: "success",
+            data: {
+                token,
+                customer: customerData,
+            },
+        });
+    } catch (error) {
+        next(error);
     }
 }

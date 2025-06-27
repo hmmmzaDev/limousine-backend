@@ -24,11 +24,21 @@ import { validateKeyInputs } from "../../middlewares/validate";
  *             type: object
  *             required:
  *               - name
+ *               - email
+ *               - password
  *               - vehicleDetails
  *             properties:
  *               name:
  *                 type: string
  *                 example: "John Smith"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "john.smith@example.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "strongPassword123"
  *               vehicleDetails:
  *                 type: object
  *                 required:
@@ -91,7 +101,7 @@ import { validateKeyInputs } from "../../middlewares/validate";
 router.post(
     "/addRecord",
     validateKeyInputs({
-        inputArr: ["name", "vehicleDetails", "-status"],
+        inputArr: ["name", "email", "password", "vehicleDetails", "-status"],
         key: "body",
     }),
     addRecord,
@@ -327,6 +337,7 @@ router.post(
         inputArr: [
             "recordId",
             "-name",
+            "-email",
             "-vehicleDetails",
             "-status",
         ],

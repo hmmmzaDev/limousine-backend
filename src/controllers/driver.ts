@@ -3,8 +3,11 @@ import {
     BadRequestError,
     InternalServerError,
     NotFoundError,
+    UnauthorizedError,
 } from "../helpers/apiError";
 import { DriverService } from "../services";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function addRecord(
     req: Request,
@@ -12,10 +15,22 @@ export async function addRecord(
     next: NextFunction,
 ) {
     try {
-        const { name, vehicleDetails, status } = req["validData"];
+        const { name, email, password, vehicleDetails, status } = req["validData"];
+
+        // Check if email already exists
+        const existingDriver = await DriverService.findOne({ email });
+        if (existingDriver) {
+            return next(new BadRequestError("Email already exists"));
+        }
+
+        // Hash password
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(password, salt);
 
         const data = await DriverService.create({
             name,
+            email,
+            password: hashedPassword,
             vehicleDetails,
             status: status || "available", // Default to available if not provided
         });
@@ -103,5 +118,54 @@ export async function deleteById(
         });
     } catch (error) {
         return next(new InternalServerError(error.message, error));
+    }
+}
+
+export async function driverLogin(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) {
+    try {
+        const { email, password } = req["validData"];
+
+        // Find driver by email with password field
+        const driver = await DriverService.findOne({ email }, { password: 1, name: 1, email: 1, status: 1, vehicleDetails: 1 });
+        if (!driver) {
+            return next(new UnauthorizedError("Invalid email or password"));
+        }
+
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(password, driver.password);
+        if (!isPasswordValid) {
+            return next(new UnauthorizedError("Invalid email or password"));
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            {
+                userId: driver._id,
+                email: driver.email,
+                name: driver.name,
+                userType: "driver",
+                role: "driver",
+            },
+            process.env.JWT_SECRET!,
+            { expiresIn: "24h" }
+        );
+
+        // Remove password from response
+        const driverData = driver.toObject();
+        delete driverData.password;
+
+        return res.status(200).json({
+            status: "success",
+            data: {
+                token,
+                driver: driverData,
+            },
+        });
+    } catch (error) {
+        next(error);
     }
 }
