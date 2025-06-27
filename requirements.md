@@ -148,7 +148,7 @@ The following features are essential for a production-ready application and will
 
 *   **Phase 3: Real-Time Communication**
     *   **Functionality:**
-        *   **Notifications:** Push real-time notifications to the relevant parties when key events occur (e.g., new booking, ride assignment).
+        *   **Notifications:** Push real-time notifications using FCM, to the relevant parties when key events occur (e.g., new booking, ride assignment).
         *   **Chat:** Implement a messaging system for communication between the customer, driver, and admin within the context of a specific booking.
 
 *   **Phase 4: Payment Processing**

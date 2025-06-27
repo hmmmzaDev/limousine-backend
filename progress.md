@@ -64,3 +64,52 @@ This document tracks the development progress of the core business logic, buildi
 *   `[✅]` **task 5.1:** Implement the `Fetch Assigned Rides` functionality for a specific driver.
 *   `[✅]` **task 5.2:** Implement the `Update Ride Status` functionality for a driver to set the status to `En-Route`.
 *   `[✅]` **task 5.3:** Enhance the `Update Ride Status` functionality for a driver to set the status to `Completed`.
+
+---
+
+### [ ] Module 6: Authentication & Authorization
+
+**Objective:** Secure the platform with role-based access control.
+
+*   `[ ]` **task 6.1:** Add a `password` field (to be hashed) to the `Customer` and `Driver` schemas.
+*   `[ ]` **task 6.2:** Implement a unified `Login` functionality that returns a JSON Web Token (JWT) on success.
+*   `[ ]` **task 6.3:** Create a JWT validation middleware to authenticate and attach user data to incoming requests.
+*   `[ ]` **task 6.4:** Create role-based authorization middleware (e.g., `isAdmin`, `isDriver`) to protect specific functionalities.
+*   `[ ]` **task 6.5:** Apply authentication and authorization middleware to all relevant functionalities across the application.
+
+---
+
+### [ ] Module 7: Real-Time Chat (WebSockets)
+
+**Objective:** Implement a real-time chat system for communication between all parties.
+
+*   `[ ]` **task 7.1:** Create the `Message` schema (`models/Message.ts`) to store chat history linked to a booking.
+*   `[ ]` **task 7.2:** Integrate Socket.IO with the Express server and implement JWT authentication for socket connections.
+*   `[ ]` **task 7.3:** Implement logic for clients to automatically join/leave booking-specific chat rooms (e.g., `chat_ride_123`).
+*   `[ ]` **task 7.4:** Implement the `Chat` functionality (listen for incoming messages, persist them, and broadcast to the correct room).
+
+---
+
+### [ ] Module 8: Push Notifications (FCM)
+
+**Objective:** Integrate Firebase Cloud Messaging to send push notifications for key events.
+
+*   `[ ]` **task 8.1:** Add an `fcmToken` field to the `Customer` and `Driver` schemas to store device tokens.
+*   `[ ]` **task 8.2:** Implement a functionality for client apps to register or update their FCM token on the backend.
+*   `[ ]` **task 8.3:** Install and configure the Firebase Admin SDK on the server.
+*   `[ ]` **task 8.4:** Create a dedicated notification service for sending messages via FCM.
+*   `[ ]` **task 8.5:** Integrate the notification service into the business logic (e.g., send notifications on 'Ride Assigned', 'Quote Ready', etc.).
+
+---
+
+### [ ] Module 9: Payment Processing (Stripe)
+
+**Objective:** Integrate a payment gateway to handle ride payments and refunds.
+
+*   `[ ]` **task 9.1:** Add a `paymentStatus` field to the `Booking` schema (e.g., `Unpaid`, `Paid`, `Refunded`).
+*   `[ ]` **task 9.2:** Install the Stripe SDK and configure API keys securely.
+*   `[ ]` **task 9.3:** Implement the functionality to create a Stripe `PaymentIntent` when a ride is marked as `Completed`.
+*   `[ ]` **task 9.4:** Create a public webhook endpoint to securely listen for events from Stripe.
+*   `[ ]` **task 9.5:** Implement webhook logic to handle the `payment_intent.succeeded` event and update the booking's `paymentStatus` to `Paid`.
+*   `[ ]` **task 9.6:** Implement an admin-only `Issue Refund` functionality that uses the Stripe API to process refunds.
+
