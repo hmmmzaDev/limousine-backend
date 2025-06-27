@@ -150,7 +150,6 @@ The following features are essential for a production-ready application and will
     *   **Functionality:**
         *   **Notifications:** Push real-time notifications to the relevant parties when key events occur (e.g., new booking, ride assignment).
         *   **Chat:** Implement a messaging system for communication between the customer, driver, and admin within the context of a specific booking.
-        *   **Live Location Tracking:** Enable the driver's application to broadcast location data, which can then be used to display a live map for the customer and admin.
 
 *   **Phase 4: Payment Processing**
     *   **Functionality:**
