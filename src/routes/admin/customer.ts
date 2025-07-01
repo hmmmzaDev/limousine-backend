@@ -11,7 +11,7 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 
 /**
  * @openapi
- * /getAll:
+ * /admin/customer/getAll:
  *   post:
  *     summary: Fetch all customers
  *     tags:
@@ -72,7 +72,7 @@ router.post(
 
 /**
  * @openapi
- * /getById:
+ * /admin/customer/getById:
  *   post:
  *     summary: Fetch customer by ID
  *     tags:
@@ -137,7 +137,7 @@ router.post(
 
 /**
  * @openapi
- * /updateRecord:
+ * /admin/customer/updateRecord:
  *   post:
  *     summary: Update customer record
  *     tags:
@@ -215,7 +215,7 @@ router.post(
 
 /**
  * @openapi
- * /deleteById:
+ * /admin/customer/deleteById:
  *   post:
  *     summary: Delete customer by ID
  *     tags:

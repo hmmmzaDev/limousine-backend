@@ -12,7 +12,7 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 
 /**
  * @openapi
- * /addRecord:
+ * /admin/driver/addRecord:
  *   post:
  *     summary: Add new driver
  *     tags:
@@ -112,7 +112,7 @@ router.post(
 
 /**
  * @openapi
- * /getAll:
+ * /admin/driver/getAll:
  *   post:
  *     summary: Fetch all drivers
  *     tags:
@@ -186,7 +186,7 @@ router.post(
 
 /**
  * @openapi
- * /getById:
+ * /admin/driver/getById:
  *   post:
  *     summary: Fetch driver by ID
  *     tags:
@@ -259,7 +259,7 @@ router.post(
 
 /**
  * @openapi
- * /updateRecord:
+ * /admin/driver/updateRecord:
  *   post:
  *     summary: Update driver record
  *     tags:
@@ -356,7 +356,7 @@ router.post(
 
 /**
  * @openapi
- * /deleteById:
+ * /admin/driver/deleteById:
  *   post:
  *     summary: Delete driver by ID
  *     tags:

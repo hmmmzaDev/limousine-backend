@@ -7,7 +7,7 @@ import { validateKeyInputs } from "../../middlewares/validate";
 
 /**
  * @openapi
- * /login:
+ * /driver/profile/login:
  *   post:
  *     summary: Driver login
  *     tags:

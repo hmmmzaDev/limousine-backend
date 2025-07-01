@@ -10,11 +10,11 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
 
 /**
  * @openapi
- * /submitRequest:
+ * /customer/booking/submitRequest:
  *   post:
  *     summary: Submit a new ride request
  *     tags:
- *       - User - Booking
+ *       - Customer - Booking
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -127,11 +127,11 @@ router.post(
 
 /**
  * @openapi
- * /acceptQuote:
+ * /customer/booking/acceptQuote:
  *   post:
  *     summary: Accept ride quote
  *     tags:
- *       - User - Booking
+ *       - Customer - Booking
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -220,11 +220,11 @@ router.post(
 
 /**
  * @openapi
- * /cancel:
+ * /customer/booking/cancel:
  *   post:
  *     summary: Cancel booking
  *     tags:
- *       - User - Booking
+ *       - Customer - Booking
  *     security:
  *       - bearerAuth: []
  *     requestBody:

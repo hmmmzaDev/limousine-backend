@@ -8,7 +8,7 @@ import { validateKeyInputs } from "../../middlewares/validate";
 
 /**
  * @openapi
- * /sendOtp:
+ * /admin/auth/sendOtp:
  *   post:
  *     summary: Send OTP for admin login
  *     tags:
@@ -58,7 +58,7 @@ router.post(
 
 /**
  * @openapi
- * /verifyOtp:
+ * /admin/auth/verifyOtp:
  *   post:
  *     summary: Verify OTP and get admin authentication token
  *     tags:

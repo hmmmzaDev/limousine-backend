@@ -8,11 +8,11 @@ import { validateKeyInputs } from "../../middlewares/validate";
 
 /**
  * @openapi
- * /signup:
+ * /customer/profile/signup:
  *   post:
  *     summary: Customer signup
  *     tags:
- *       - User - Customer
+ *       - Customer
  *     requestBody:
  *       required: true
  *       content:
@@ -92,11 +92,11 @@ router.post(
 
 /**
  * @openapi
- * /login:
+ * /customer/profile/login:
  *   post:
  *     summary: Customer login
  *     tags:
- *       - User - Customer
+ *       - Customer
  *     requestBody:
  *       required: true
  *       content:

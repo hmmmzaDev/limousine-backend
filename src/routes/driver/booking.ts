@@ -9,7 +9,7 @@ import { authenticateToken, requireDriver } from "../../middlewares/auth";
 
 /**
  * @openapi
- * /getAssignedRides:
+ * /driver/booking/getAssignedRides:
  *   post:
  *     summary: Fetch assigned rides for the authenticated driver
  *     tags:
@@ -112,7 +112,7 @@ router.post(
 
 /**
  * @openapi
- * /updateStatus:
+ * /driver/booking/updateStatus:
  *   post:
  *     summary: Update ride status (En-Route or Completed)
  *     tags:

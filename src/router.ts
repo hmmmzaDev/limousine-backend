@@ -1,5 +1,5 @@
 import AdminRouter from "./routes/admin";
-import CustomerRouter from "./routes/user";
+import CustomerRouter from "./routes/customer";
 import DriverRouter from "./routes/driver";
 
 export default function ROUTER(app) {

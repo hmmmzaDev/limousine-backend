@@ -10,7 +10,7 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 
 /**
  * @openapi
- * /getAll:
+ * /admin/booking/getAll:
  *   post:
  *     summary: Fetch bookings with optional status filtering
  *     tags:
@@ -117,7 +117,7 @@ router.post(
 
 /**
  * @openapi
- * /getById:
+ * /admin/booking/getById:
  *   post:
  *     summary: Fetch booking by ID
  *     tags:
@@ -223,7 +223,7 @@ router.post(
 
 /**
  * @openapi
- * /assignDriverAndSetPrice:
+ * /admin/booking/assignDriverAndSetPrice:
  *   post:
  *     summary: Assign driver and set price for a booking
  *     tags:
