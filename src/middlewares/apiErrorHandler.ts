@@ -8,10 +8,13 @@ export default function (
     res: Response,
     next: NextFunction
 ) {
+    // Default to 500 if statusCode is not defined
+    const statusCode = error.statusCode || 500;
+    const message = error.message || 'Internal Server Error';
 
-    res.status(error.statusCode).json({
+    res.status(statusCode).json({
         status: 'error',
-        statusCode: error.statusCode,
-        message: error.message,
+        statusCode: statusCode,
+        message: message,
     })
 }

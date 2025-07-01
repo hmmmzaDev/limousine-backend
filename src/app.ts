@@ -19,7 +19,7 @@ const swaggerOptions = {
   definition: {
     openapi: "3.0.0", // OpenAPI version
     info: {
-      title: "ExpressJS Backend Template API",
+      title: "Limousine API",
       version: "1.0.0",
       description: "Generic ExpressJS backend template with user management, authentication, and file upload",
     },
@@ -76,8 +76,20 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 const app = express();
 
-app.use(express.json());
+// Parse JSON bodies (with lenient type checking)
+app.use(express.json({ type: ['application/json', 'text/plain'] }));
+// Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware to handle missing body parsing
+app.use((req, res, next) => {
+  // Log for debugging
+  if (req.method !== 'GET' && req.method !== 'HEAD' && !req.body) {
+    console.log('Warning: No body parsed for', req.method, req.url);
+    console.log('Headers:', req.headers);
+  }
+  next();
+});
 app.use(cors({ origin: "*" }));
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 

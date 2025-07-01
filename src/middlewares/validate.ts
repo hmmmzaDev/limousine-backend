@@ -22,9 +22,29 @@ export function validateKeyInputs({
 }) {
   return (req: Request, res: Response, next: NextFunction) => {
     req["validData"] = {};
+
+    // Handle case where body might be a string that needs parsing
+    if (field === "body" && typeof req.body === "string") {
+      try {
+        req.body = JSON.parse(req.body);
+      } catch (e) {
+        console.error("Failed to parse body as JSON:", e);
+      }
+    }
+
     if (!inputArr || inputArr.length === 0) {
       return next();
     }
+
+    // Check if the field exists on the request
+    if (!req[field]) {
+      res.status(400).json({
+        status: "error",
+        message: `No ${field} data found in request`,
+      });
+      return;
+    }
+
     let errors: any[] = [];
     inputArr.forEach((input) => {
       if (!String(input).startsWith("-")) {
