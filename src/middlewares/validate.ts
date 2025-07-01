@@ -40,12 +40,13 @@ export function validateKeyInputs({
       }
     });
     if (errors.length > 0) {
-      return res.status(400).json({
+      res.status(400).json({
         status: "error",
         message: `you have missed some inputs in ${field}`,
         missedInputs: errors,
       });
+      return;
     }
-    return next();
+    next();
   };
 }

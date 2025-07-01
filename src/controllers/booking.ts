@@ -33,7 +33,7 @@ export async function submitRideRequest(
         }
 
         const data = await BookingService.create({
-            customerId,
+            customerId: new (require('mongoose')).Types.ObjectId(customerId),
             pickupLocation,
             dropoffLocation,
             rideTime: requestedTime,

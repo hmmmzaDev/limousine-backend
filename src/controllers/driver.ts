@@ -123,7 +123,7 @@ export async function deleteById(
         }
 
         await DriverService.deleteById(recordId);
-        return res.json({
+        res.json({
             status: "success",
             data: "Record deleted successfully",
         });
@@ -168,7 +168,7 @@ export async function driverLogin(
         // Remove password from response and ensure 'id' field is present
         const driverData = driver.toJSON();
 
-        return res.status(200).json({
+        res.status(200).json({
             status: "success",
             data: {
                 token,

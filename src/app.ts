@@ -78,7 +78,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ "Access-Control-Allow-Origin": "*" }));
+app.use(cors({ origin: "*" }));
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 app
@@ -109,9 +109,10 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error("DB Connection Middleware Error:", error);
     // Do not proceed if DB connection fails for critical routes
-    return res
+    res
       .status(503)
       .json({ message: "Service Unavailable - Database connection error" });
+    return;
   }
   // }
   next();
@@ -119,7 +120,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 
 ROUTER(app);
 app.get("/", (req, res) => {
-  return res.json({ message: "Hello World" });
+  res.json({ message: "Hello World" });
 });
 
 app.use(errorHandler);

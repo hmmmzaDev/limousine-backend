@@ -9,7 +9,7 @@ export default function (
     next: NextFunction
 ) {
 
-    return res.status(error.statusCode).json({
+    res.status(error.statusCode).json({
         status: 'error',
         statusCode: error.statusCode,
         message: error.message,
