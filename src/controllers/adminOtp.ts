@@ -41,9 +41,7 @@ export async function verifyOtp(
     next: NextFunction,
 ) {
     try {
-        // Use validData if available (from validation middleware), otherwise fallback to body
-        const validatedData = req["validData"];
-        const { otp } = validatedData;
+        const { otp } = req["validData"];
 
         const data = await AdminOtpService.findOne({ otp });
 
