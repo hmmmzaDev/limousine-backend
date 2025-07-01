@@ -81,15 +81,7 @@ app.use(express.json({ type: ['application/json', 'text/plain'] }));
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Middleware to handle missing body parsing
-app.use((req, res, next) => {
-  // Log for debugging
-  if (req.method !== 'GET' && req.method !== 'HEAD' && !req.body) {
-    console.log('Warning: No body parsed for', req.method, req.url);
-    console.log('Headers:', req.headers);
-  }
-  next();
-});
+
 app.use(cors({ origin: "*" }));
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 

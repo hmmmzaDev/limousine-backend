@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 const router = express.Router();
 import {
     sendOtp,
@@ -126,16 +126,6 @@ router.post(
  */
 router.post(
     "/verifyOtp",
-    (req, res, next) => {
-        console.log("=== Debug Info ===");
-        console.log("Method:", req.method);
-        console.log("URL:", req.url);
-        console.log("Headers:", JSON.stringify(req.headers, null, 2));
-        console.log("Body type:", typeof req.body);
-        console.log("Body:", req.body);
-        console.log("=================");
-        next();
-    },
     validateKeyInputs({
         inputArr: ["otp"],
         key: "body",
