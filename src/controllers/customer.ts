@@ -27,16 +27,21 @@ export async function signup(
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(password, salt);
 
-        const data = await CustomerService.create({
+        const createdCustomer = await CustomerService.create({
             name,
             email,
             password: hashedPassword,
         });
+
         return res.json({
             status: "success",
-            data,
+            data: createdCustomer.toJSON(),
         });
     } catch (error) {
+        // Handle MongoDB duplicate key error
+        if (error.code === 11000 || error.message.includes('duplicate key')) {
+            return next(new BadRequestError("Email already exists"));
+        }
         return next(new BadRequestError(error.message));
     }
 }
@@ -152,9 +157,8 @@ export async function customerLogin(
             { expiresIn: "24h" }
         );
 
-        // Remove password from response
-        const customerData = customer.toObject();
-        delete customerData.password;
+        // Remove password from response and ensure 'id' field is present
+        const customerData = customer.toJSON();
 
         return res.status(200).json({
             status: "success",

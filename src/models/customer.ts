@@ -49,7 +49,10 @@ CustomerSchema.set("toJSON", {
     virtuals: true,
     versionKey: false,
     transform: function (doc, ret) {
+        ret.id = ret._id.toString();
         delete ret._id;
+        delete ret.__v;
+        delete ret.password; // Explicitly remove password from JSON output
         return ret;
     },
 });

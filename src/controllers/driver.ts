@@ -27,18 +27,23 @@ export async function addRecord(
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(password, salt);
 
-        const data = await DriverService.create({
+        const createdDriver = await DriverService.create({
             name,
             email,
             password: hashedPassword,
             vehicleDetails,
             status: status || "available", // Default to available if not provided
         });
+
         return res.json({
             status: "success",
-            data,
+            data: createdDriver.toJSON(),
         });
     } catch (error) {
+        // Handle MongoDB duplicate key error
+        if (error.code === 11000 || error.message.includes('duplicate key')) {
+            return next(new BadRequestError("Email already exists"));
+        }
         return next(new BadRequestError(error.message));
     }
 }
@@ -89,9 +94,15 @@ export async function updateRecord(
         await DriverService.updateById(recordId, {
             ...otherFields,
         });
+
+        const updatedDriver = await DriverService.findById(recordId);
+        // Remove password from response (fallback in case select: false doesn't work)
+        const data = updatedDriver.toObject();
+        delete data.password;
+
         return res.json({
             status: "success",
-            data: await DriverService.findById(recordId),
+            data,
         });
     } catch (error) {
         return next(new NotFoundError("No Record Found", error));
@@ -154,9 +165,8 @@ export async function driverLogin(
             { expiresIn: "24h" }
         );
 
-        // Remove password from response
-        const driverData = driver.toObject();
-        delete driverData.password;
+        // Remove password from response and ensure 'id' field is present
+        const driverData = driver.toJSON();
 
         return res.status(200).json({
             status: "success",
