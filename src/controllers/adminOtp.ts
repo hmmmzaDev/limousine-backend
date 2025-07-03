@@ -3,7 +3,7 @@ import { BadRequestError, InternalServerError, NotFoundError, UnauthorizedError 
 import { AdminOtpService } from "../services";
 import sendMail from "../helpers/sendMail";
 import jwt from "jsonwebtoken";
-import { generateRandomString } from "@/helpers/functions";
+import { generateRandomString } from "../helpers/functions";
 
 export async function sendOtp(
     req: Request,
