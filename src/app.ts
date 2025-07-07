@@ -21,7 +21,7 @@ const swaggerOptions = {
     info: {
       title: "Limousine API",
       version: "1.0.0",
-      description: "Generic ExpressJS backend template with user management, authentication, and file upload",
+      description: "API documentation for Limousine-Booking Platform",
     },
     servers: [
       {
@@ -77,10 +77,9 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 const app = express();
 
 // Parse JSON bodies (with lenient type checking)
-app.use(express.json({ type: ['application/json', 'text/plain'] }));
+app.use(express.json({ type: ["application/json", "text/plain"] }));
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use(cors({ origin: "*" }));
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
