@@ -16,8 +16,27 @@ describe('Customer Booking Routes', () => {
             await new Promise(resolve => setTimeout(resolve, 100));
 
             const bookingData = {
-                pickupLocation: '123 Main Street, Downtown',
-                dropoffLocation: '456 Oak Avenue, Uptown',
+                startLocation: {
+                    longitude: -73.935242,
+                    latitude: 40.73061,
+                    locationName: '123 Main Street, Downtown',
+                },
+                finalLocation: {
+                    longitude: -73.935242,
+                    latitude: 40.73061,
+                    locationName: '456 Oak Avenue, Uptown',
+                },
+                stops: [
+                    {
+                        longitude: -73.935242,
+                        latitude: 40.73061,
+                        locationName: '789 Pine Street, Midtown',
+                    }
+                ],
+                numberOfPassengers: 2,
+                numberOfLuggage: 1,
+                note: 'Please arrive 10 minutes early',
+                contactInfo: '+1234567890',
                 rideTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Tomorrow
             };
 
@@ -33,8 +52,13 @@ describe('Customer Booking Routes', () => {
             expect(res.statusCode).toBe(200);
             expect(res.body.status).toBe('success');
             expect(res.body.data).toHaveProperty('id');
-            expect(res.body.data.pickupLocation).toBe(bookingData.pickupLocation);
-            expect(res.body.data.dropoffLocation).toBe(bookingData.dropoffLocation);
+            expect(res.body.data.startLocation).toEqual(bookingData.startLocation);
+            expect(res.body.data.finalLocation).toEqual(bookingData.finalLocation);
+            expect(res.body.data.stops).toEqual(bookingData.stops);
+            expect(res.body.data.numberOfPassengers).toBe(bookingData.numberOfPassengers);
+            expect(res.body.data.numberOfLuggage).toBe(bookingData.numberOfLuggage);
+            expect(res.body.data.note).toBe(bookingData.note);
+            expect(res.body.data.contactInfo).toBe(bookingData.contactInfo);
             expect(res.body.data.status).toBe('Pending');
             // customerId might be populated object or string
             const customerIdValue = typeof res.body.data.customerId === 'object'
@@ -45,8 +69,21 @@ describe('Customer Booking Routes', () => {
 
         it('should require authentication', async () => {
             const bookingData = {
-                pickupLocation: '123 Main Street, Downtown',
-                dropoffLocation: '456 Oak Avenue, Uptown',
+                startLocation: {
+                    longitude: -73.935242,
+                    latitude: 40.73061,
+                    locationName: '123 Main Street, Downtown',
+                },
+                finalLocation: {
+                    longitude: -73.935242,
+                    latitude: 40.73061,
+                    locationName: '456 Oak Avenue, Uptown',
+                },
+                stops: [],
+                numberOfPassengers: 2,
+                numberOfLuggage: 1,
+                note: 'Please arrive 10 minutes early',
+                contactInfo: '+1234567890',
                 rideTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
             };
 
@@ -66,8 +103,12 @@ describe('Customer Booking Routes', () => {
                 .post('/customer/booking/submitRequest')
                 .set(getAuthHeaders(token))
                 .send({
-                    pickupLocation: '123 Main Street'
-                    // Missing dropoffLocation and rideTime
+                    startLocation: {
+                        longitude: -73.935242,
+                        latitude: 40.73061,
+                        locationName: '123 Main Street',
+                    },
+                    // Missing finalLocation, numberOfPassengers, numberOfLuggage, contactInfo, rideTime
                 });
 
             expect(res.statusCode).toBe(400);
@@ -79,8 +120,21 @@ describe('Customer Booking Routes', () => {
             const { token } = await createTestCustomer();
 
             const bookingData = {
-                pickupLocation: '123 Main Street, Downtown',
-                dropoffLocation: '456 Oak Avenue, Uptown',
+                startLocation: {
+                    longitude: -73.935242,
+                    latitude: 40.73061,
+                    locationName: '123 Main Street, Downtown',
+                },
+                finalLocation: {
+                    longitude: -73.935242,
+                    latitude: 40.73061,
+                    locationName: '456 Oak Avenue, Uptown',
+                },
+                stops: [],
+                numberOfPassengers: 2,
+                numberOfLuggage: 1,
+                note: 'Please arrive 10 minutes early',
+                contactInfo: '+1234567890',
                 rideTime: new Date(Date.now() - 60 * 60 * 1000).toISOString() // 1 hour ago
             };
 

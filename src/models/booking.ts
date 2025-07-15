@@ -1,18 +1,65 @@
 import mongoose, { Schema, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
 
+interface ILocation {
+    longitude: number;
+    latitude: number;
+    locationName: string;
+}
+
+interface IStop {
+    longitude: number;
+    latitude: number;
+    locationName: string;
+}
+
 interface IBooking extends Document {
     id: string;
     customerId: Schema.Types.ObjectId;
     driverId?: Schema.Types.ObjectId;
-    pickupLocation: string;
-    dropoffLocation: string;
+    startLocation: ILocation;
+    finalLocation: ILocation;
+    stops: IStop[];
+    numberOfPassengers: number;
+    numberOfLuggage: number;
+    note?: string;
+    contactInfo: string;
     rideTime: Date;
     finalPrice?: number;
     status: "Pending" | "Awaiting-Acceptance" | "Assigned" | "En-Route" | "Completed" | "Cancelled";
     createdAt: Date;
     updatedAt: Date;
 }
+
+const LocationSchema = new Schema<ILocation>({
+    longitude: {
+        type: Number,
+        required: true,
+    },
+    latitude: {
+        type: Number,
+        required: true,
+    },
+    locationName: {
+        type: String,
+        required: true,
+    },
+}, { _id: false });
+
+const StopSchema = new Schema<IStop>({
+    longitude: {
+        type: Number,
+        required: true,
+    },
+    latitude: {
+        type: Number,
+        required: true,
+    },
+    locationName: {
+        type: String,
+        required: true,
+    },
+}, { _id: false });
 
 const BookingSchema = new Schema<IBooking>(
     {
@@ -28,11 +75,33 @@ const BookingSchema = new Schema<IBooking>(
             autopopulate: true,
             default: null,
         },
-        pickupLocation: {
-            type: String,
+        startLocation: {
+            type: LocationSchema,
             required: true,
         },
-        dropoffLocation: {
+        finalLocation: {
+            type: LocationSchema,
+            required: true,
+        },
+        stops: {
+            type: [StopSchema],
+            default: [],
+        },
+        numberOfPassengers: {
+            type: Number,
+            required: true,
+            min: 1,
+        },
+        numberOfLuggage: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+        note: {
+            type: String,
+            default: null,
+        },
+        contactInfo: {
             type: String,
             required: true,
         },

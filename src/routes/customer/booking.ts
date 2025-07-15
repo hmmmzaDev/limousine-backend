@@ -12,7 +12,7 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  * @openapi
  * /customer/booking/submitRequest:
  *   post:
- *     summary: Submit a new ride request
+ *     summary: Submit a ride request
  *     tags:
  *       - Customer - Booking
  *     security:
@@ -24,16 +24,77 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *           schema:
  *             type: object
  *             required:
- *               - pickupLocation
- *               - dropoffLocation
+ *               - startLocation
+ *               - finalLocation
+ *               - numberOfPassengers
+ *               - numberOfLuggage
+ *               - contactInfo
  *               - rideTime
  *             properties:
- *               pickupLocation:
+ *               startLocation:
+ *                 type: object
+ *                 required:
+ *                   - longitude
+ *                   - latitude
+ *                   - locationName
+ *                 properties:
+ *                   longitude:
+ *                     type: number
+ *                     example: -73.935242
+ *                   latitude:
+ *                     type: number
+ *                     example: 40.730610
+ *                   locationName:
+ *                     type: string
+ *                     example: "123 Main Street, Downtown"
+ *               finalLocation:
+ *                 type: object
+ *                 required:
+ *                   - longitude
+ *                   - latitude
+ *                   - locationName
+ *                 properties:
+ *                   longitude:
+ *                     type: number
+ *                     example: -73.935242
+ *                   latitude:
+ *                     type: number
+ *                     example: 40.730610
+ *                   locationName:
+ *                     type: string
+ *                     example: "456 Oak Avenue, Uptown"
+ *               stops:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - longitude
+ *                     - latitude
+ *                     - locationName
+ *                   properties:
+ *                     longitude:
+ *                       type: number
+ *                       example: -73.935242
+ *                     latitude:
+ *                       type: number
+ *                       example: 40.730610
+ *                     locationName:
+ *                       type: string
+ *                       example: "789 Pine Street, Midtown"
+ *               numberOfPassengers:
+ *                 type: number
+ *                 minimum: 1
+ *                 example: 2
+ *               numberOfLuggage:
+ *                 type: number
+ *                 minimum: 0
+ *                 example: 1
+ *               note:
  *                 type: string
- *                 example: "123 Main Street, Downtown"
- *               dropoffLocation:
+ *                 example: "Please arrive 10 minutes early"
+ *               contactInfo:
  *                 type: string
- *                 example: "456 Oak Avenue, Uptown"
+ *                 example: "+1234567890"
  *               rideTime:
  *                 type: string
  *                 format: date-time
@@ -53,21 +114,61 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *                   type: object
  *                   properties:
  *                     id:
-                  *                       type: string
-                 *                       example: "67bf1f5867e753b86463b5d1"
-                 *                     customerId:
-                 *                       type: object
-                 *                       description: "Automatically set from authenticated user"
+ *                       type: string
+ *                       example: "67bf1f5867e753b86463b5d1"
+ *                     customerId:
+ *                       type: object
  *                     driverId:
+ *                       type: object
+ *                       nullable: true
+ *                     startLocation:
+ *                       type: object
+ *                       properties:
+ *                         longitude:
+ *                           type: number
+ *                           example: -73.935242
+ *                         latitude:
+ *                           type: number
+ *                           example: 40.730610
+ *                         locationName:
+ *                           type: string
+ *                           example: "123 Main Street, Downtown"
+ *                     finalLocation:
+ *                       type: object
+ *                       properties:
+ *                         longitude:
+ *                           type: number
+ *                           example: -73.935242
+ *                         latitude:
+ *                           type: number
+ *                           example: 40.730610
+ *                         locationName:
+ *                           type: string
+ *                           example: "456 Oak Avenue, Uptown"
+ *                     stops:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           longitude:
+ *                             type: number
+ *                           latitude:
+ *                             type: number
+ *                           locationName:
+ *                             type: string
+ *                     numberOfPassengers:
+ *                       type: number
+ *                       example: 2
+ *                     numberOfLuggage:
+ *                       type: number
+ *                       example: 1
+ *                     note:
  *                       type: string
  *                       nullable: true
- *                       example: null
- *                     pickupLocation:
+ *                       example: "Please arrive 10 minutes early"
+ *                     contactInfo:
  *                       type: string
- *                       example: "123 Main Street, Downtown"
- *                     dropoffLocation:
- *                       type: string
- *                       example: "456 Oak Avenue, Uptown"
+ *                       example: "+1234567890"
  *                     rideTime:
  *                       type: string
  *                       format: date-time
@@ -75,7 +176,7 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *                     finalPrice:
  *                       type: number
  *                       nullable: true
- *                       example: null
+ *                       example: 75.50
  *                     status:
  *                       type: string
  *                       example: "Pending"
@@ -99,19 +200,6 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *                   example: "error"
  *                 message:
  *                   type: string
- *                   example: "Ride time must be in the future"
- *       '404':
- *         description: Customer not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: "error"
- *                 message:
- *                   type: string
  *                   example: "Customer not found"
  */
 router.post(
@@ -119,7 +207,7 @@ router.post(
     authenticateToken,
     requireCustomer,
     validateKeyInputs({
-        inputArr: ["pickupLocation", "dropoffLocation", "rideTime"],
+        inputArr: ["startLocation", "finalLocation", "numberOfPassengers", "numberOfLuggage", "contactInfo", "rideTime", "-stops", "-note"],
         key: "body",
     }),
     submitRideRequest,
@@ -167,12 +255,54 @@ router.post(
  *                       type: object
  *                     driverId:
  *                       type: object
- *                     pickupLocation:
+ *                     startLocation:
+ *                       type: object
+ *                       properties:
+ *                         longitude:
+ *                           type: number
+ *                           example: -73.935242
+ *                         latitude:
+ *                           type: number
+ *                           example: 40.730610
+ *                         locationName:
+ *                           type: string
+ *                           example: "123 Main Street, Downtown"
+ *                     finalLocation:
+ *                       type: object
+ *                       properties:
+ *                         longitude:
+ *                           type: number
+ *                           example: -73.935242
+ *                         latitude:
+ *                           type: number
+ *                           example: 40.730610
+ *                         locationName:
+ *                           type: string
+ *                           example: "456 Oak Avenue, Uptown"
+ *                     stops:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           longitude:
+ *                             type: number
+ *                           latitude:
+ *                             type: number
+ *                           locationName:
+ *                             type: string
+ *                     numberOfPassengers:
+ *                       type: number
+ *                       example: 2
+ *                     numberOfLuggage:
+ *                       type: number
+ *                       example: 1
+ *                     note:
  *                       type: string
- *                       example: "123 Main Street, Downtown"
- *                     dropoffLocation:
+ *                       nullable: true
+ *                       example: "Please arrive 10 minutes early"
+ *                     contactInfo:
  *                       type: string
- *                       example: "456 Oak Avenue, Uptown"
+ *                       example: "+1234567890"
  *                     rideTime:
  *                       type: string
  *                       format: date-time
@@ -261,12 +391,54 @@ router.post(
  *                     driverId:
  *                       type: object
  *                       nullable: true
- *                     pickupLocation:
+ *                     startLocation:
+ *                       type: object
+ *                       properties:
+ *                         longitude:
+ *                           type: number
+ *                           example: -73.935242
+ *                         latitude:
+ *                           type: number
+ *                           example: 40.730610
+ *                         locationName:
+ *                           type: string
+ *                           example: "123 Main Street, Downtown"
+ *                     finalLocation:
+ *                       type: object
+ *                       properties:
+ *                         longitude:
+ *                           type: number
+ *                           example: -73.935242
+ *                         latitude:
+ *                           type: number
+ *                           example: 40.730610
+ *                         locationName:
+ *                           type: string
+ *                           example: "456 Oak Avenue, Uptown"
+ *                     stops:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           longitude:
+ *                             type: number
+ *                           latitude:
+ *                             type: number
+ *                           locationName:
+ *                             type: string
+ *                     numberOfPassengers:
+ *                       type: number
+ *                       example: 2
+ *                     numberOfLuggage:
+ *                       type: number
+ *                       example: 1
+ *                     note:
  *                       type: string
- *                       example: "123 Main Street, Downtown"
- *                     dropoffLocation:
+ *                       nullable: true
+ *                       example: "Please arrive 10 minutes early"
+ *                     contactInfo:
  *                       type: string
- *                       example: "456 Oak Avenue, Uptown"
+ *                       example: "+1234567890"
  *                     rideTime:
  *                       type: string
  *                       format: date-time

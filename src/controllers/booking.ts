@@ -12,7 +12,16 @@ export async function submitRideRequest(
     next: NextFunction,
 ) {
     try {
-        const { pickupLocation, dropoffLocation, rideTime } = req["validData"];
+        const {
+            startLocation,
+            finalLocation,
+            stops,
+            numberOfPassengers,
+            numberOfLuggage,
+            note,
+            contactInfo,
+            rideTime
+        } = req["validData"];
 
         // Get customer ID from authenticated user
         const customerId = req.user?.userId;
@@ -32,10 +41,33 @@ export async function submitRideRequest(
             return next(new BadRequestError("Ride time must be in the future"));
         }
 
+        // Validate location data
+        if (!startLocation || !startLocation.longitude || !startLocation.latitude || !startLocation.locationName) {
+            return next(new BadRequestError("Start location must include longitude, latitude, and locationName"));
+        }
+
+        if (!finalLocation || !finalLocation.longitude || !finalLocation.latitude || !finalLocation.locationName) {
+            return next(new BadRequestError("Final location must include longitude, latitude, and locationName"));
+        }
+
+        // Validate stops if provided
+        if (stops && Array.isArray(stops)) {
+            for (const stop of stops) {
+                if (!stop.longitude || !stop.latitude || !stop.locationName) {
+                    return next(new BadRequestError("Each stop must include longitude, latitude, and locationName"));
+                }
+            }
+        }
+
         const data = await BookingService.create({
             customerId: new (require('mongoose')).Types.ObjectId(customerId),
-            pickupLocation,
-            dropoffLocation,
+            startLocation,
+            finalLocation,
+            stops: stops || [],
+            numberOfPassengers,
+            numberOfLuggage,
+            note: note || null,
+            contactInfo,
             rideTime: requestedTime,
             status: "Pending", // Initial status as per requirements
         });
