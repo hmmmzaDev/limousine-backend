@@ -353,3 +353,31 @@ export async function updateRideStatus(
         return next(new BadRequestError(error.message));
     }
 }
+
+export async function fetchBookingsByCustomer(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { customerId } = req["validData"];
+
+        // Validate customer exists
+        const customer = await CustomerService.findById(customerId);
+        if (!customer) {
+            return next(new NotFoundError("Customer not found"));
+        }
+
+        // Fetch all bookings for this customer
+        const bookings = await BookingService.findAll({
+            customerId: customerId
+        });
+
+        return res.json({
+            status: "success",
+            data: bookings,
+        });
+    } catch (error) {
+        return next(new NotFoundError("No Record Found", error));
+    }
+}

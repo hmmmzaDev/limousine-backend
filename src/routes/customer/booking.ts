@@ -4,6 +4,7 @@ import {
     submitRideRequest,
     acceptRideQuote,
     cancelBooking,
+    fetchBookingsByCustomer,
 } from "../../controllers/booking";
 import { validateKeyInputs } from "../../middlewares/validate";
 import { authenticateToken, requireCustomer } from "../../middlewares/auth";
@@ -483,6 +484,101 @@ router.post(
         key: "body",
     }),
     cancelBooking,
+);
+
+/**
+ * @openapi
+ * /customer/booking/byCustomer:
+ *   get:
+ *     summary: Get all bookings for a specific customer
+ *     tags:
+ *       - Customer - Booking
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: customerId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the customer to fetch bookings for
+ *         example: "67bf1f5867e753b86463b5d1"
+ *     responses:
+ *       '200':
+ *         description: Bookings retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "67bf1f5867e753b86463b5d1"
+ *                       customerId:
+ *                         type: object
+ *                       driverId:
+ *                         type: object
+ *                         nullable: true
+ *                       startLocation:
+ *                         type: object
+ *                       finalLocation:
+ *                         type: object
+ *                       stops:
+ *                         type: array
+ *                       numberOfPassengers:
+ *                         type: number
+ *                       numberOfLuggage:
+ *                         type: number
+ *                       note:
+ *                         type: string
+ *                         nullable: true
+ *                       contactInfo:
+ *                         type: string
+ *                       rideTime:
+ *                         type: string
+ *                         format: date-time
+ *                       finalPrice:
+ *                         type: number
+ *                         nullable: true
+ *                       status:
+ *                         type: string
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *       '404':
+ *         description: Customer not found or no bookings found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "No Record Found"
+ */
+router.get(
+    "/byCustomer",
+    authenticateToken,
+    requireCustomer,
+    validateKeyInputs({
+        inputArr: ["customerId"],
+        key: "query",
+    }),
+    fetchBookingsByCustomer,
 );
 
 export default router;
