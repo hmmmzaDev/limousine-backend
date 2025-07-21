@@ -92,7 +92,7 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
  *                         example: 50.00
  *                       status:
  *                         type: string
- *                         example: "Pending"
+ *                         example: "pending"
  *                       createdAt:
  *                         type: string
  *                         format: date-time
@@ -198,7 +198,7 @@ router.post(
  *                       example: 50.00
  *                     status:
  *                       type: string
- *                       example: "Pending"
+ *                       example: "pending"
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -294,7 +294,7 @@ router.post(
  *                       example: 75.50
  *                     status:
  *                       type: string
- *                       example: "Awaiting-Acceptance"
+ *                       example: "awaiting-acceptance"
  *                     createdAt:
  *                       type: string
  *                       format: date-time

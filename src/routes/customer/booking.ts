@@ -180,7 +180,7 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *                       example: 75.50
  *                     status:
  *                       type: string
- *                       example: "Pending"
+ *                       example: "pending"
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -313,7 +313,7 @@ router.post(
  *                       example: 75.50
  *                     status:
  *                       type: string
- *                       example: "Assigned"
+ *                       example: "assigned"
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -450,7 +450,7 @@ router.post(
  *                       example: 75.50
  *                     status:
  *                       type: string
- *                       example: "Cancelled"
+ *                       example: "cancelled"
  *                     createdAt:
  *                       type: string
  *                       format: date-time

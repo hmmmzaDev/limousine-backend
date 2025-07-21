@@ -86,8 +86,8 @@ import { authenticateToken, requireDriver } from "../../middlewares/auth";
  *                         example: 75.50
  *                       status:
  *                         type: string
- *                         enum: ["Assigned", "En-Route"]
- *                         example: "Assigned"
+ *                         enum: ["assigned", "en-route"]
+ *                         example: "assigned"
  *                       createdAt:
  *                         type: string
  *                         format: date-time
@@ -134,8 +134,8 @@ router.post(
  *                 example: "67bf1f5867e753b86463b5d1"
  *               newStatus:
  *                 type: string
- *                 enum: ["En-Route", "Completed"]
- *                 example: "En-Route"
+ *                 enum: ["en-route", "completed"]
+ *                 example: "en-route"
  *     responses:
  *       '200':
  *         description: Ride status updated successfully
@@ -172,8 +172,8 @@ router.post(
  *                       example: 75.50
  *                     status:
  *                       type: string
- *                       enum: ["En-Route", "Completed"]
- *                       example: "En-Route"
+ *                       enum: ["en-route", "completed"]
+ *                       example: "en-route"
  *                     createdAt:
  *                       type: string
  *                       format: date-time

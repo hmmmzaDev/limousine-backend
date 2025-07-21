@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
+import { BookingStatus } from "../helpers/constants";
 
 interface ILocation {
     longitude: number;
@@ -26,7 +27,7 @@ interface IBooking extends Document {
     contactInfo: string;
     rideTime: Date;
     finalPrice?: number;
-    status: "Pending" | "Awaiting-Acceptance" | "Assigned" | "En-Route" | "Completed" | "Cancelled";
+    status: typeof BookingStatus[keyof typeof BookingStatus];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -115,15 +116,8 @@ const BookingSchema = new Schema<IBooking>(
         },
         status: {
             type: String,
-            enum: [
-                "Pending",             // Customer has submitted, waiting for admin
-                "Awaiting-Acceptance", // Admin has set a price, waiting for customer
-                "Assigned",            // Customer has accepted, waiting for driver
-                "En-Route",            // Driver is on the way
-                "Completed",           // Ride finished
-                "Cancelled"            // Ride cancelled by customer
-            ],
-            default: "Pending",
+            enum: Object.values(BookingStatus),
+            default: BookingStatus.PENDING,
             required: true,
         },
         createdAt: {
