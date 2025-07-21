@@ -243,13 +243,9 @@ export async function cancelBooking(
             return next(new BadRequestError("You can only cancel your own bookings"));
         }
 
-        // Check if booking can be cancelled (not already completed)
-        if (booking.status === BookingStatus.COMPLETED) {
-            return next(new BadRequestError("Cannot cancel a completed booking"));
-        }
-
-        if (booking.status === BookingStatus.CANCELLED) {
-            return next(new BadRequestError("Booking is already cancelled"));
+        // Check if booking can be cancelled (not already underway)
+        if (!([BookingStatus.PENDING, BookingStatus.AWAITING_ACCEPTANCE].includes(booking.status))) {
+            return next(new BadRequestError("Cannot cancel this booking"));
         }
 
         // Update booking status to Cancelled
