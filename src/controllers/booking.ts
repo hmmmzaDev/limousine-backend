@@ -283,7 +283,14 @@ export async function fetchAssignedRides(
         // Fetch all bookings assigned to this driver
         const assignedRides = await BookingService.findAll({
             driverId: driverId,
-            status: { $in: [BookingStatus.ASSIGNED, BookingStatus.EN_ROUTE] } // Only show active rides
+            status: { 
+                $in: [
+                    BookingStatus.ASSIGNED, 
+                    BookingStatus.HEADING_TO_PICKUP,
+                    BookingStatus.ARRIVED_AT_PICKUP,
+                    BookingStatus.EN_ROUTE
+                ] 
+            } // Only show active rides
         });
 
         return res.json({
@@ -295,13 +302,13 @@ export async function fetchAssignedRides(
     }
 }
 
-export async function updateRideStatus(
+export async function startHeadingToPickup(
     req: Request,
     res: Response | any,
     next: NextFunction,
 ) {
     try {
-        const { bookingId, newStatus } = req["validData"];
+        const { bookingId } = req["validData"];
 
         // Get driver ID from authenticated user
         const driverId = req.user?.userId;
@@ -320,23 +327,150 @@ export async function updateRideStatus(
             return next(new BadRequestError("You can only update status for rides assigned to you"));
         }
 
-        // Validate status transitions
-        const validTransitions = {
-            [BookingStatus.ASSIGNED]: [BookingStatus.EN_ROUTE],
-            [BookingStatus.EN_ROUTE]: [BookingStatus.COMPLETED]
-        };
-
-        if (!validTransitions[booking.status] || !validTransitions[booking.status].includes(newStatus)) {
-            return next(new BadRequestError(`Cannot transition from '${booking.status}' to '${newStatus}'. Valid transitions from '${booking.status}': ${validTransitions[booking.status]?.join(", ") || "none"}`));
+        // Validate current status
+        if (booking.status !== BookingStatus.ASSIGNED) {
+            return next(new BadRequestError(`Booking must be in '${BookingStatus.ASSIGNED}' status to start heading to pickup`));
         }
 
         // Update booking status
         const updatedBooking = await BookingService.updateById(bookingId, {
-            status: newStatus
+            status: BookingStatus.HEADING_TO_PICKUP
         });
 
-        // If ride is completed, update driver status to available
-        if (newStatus === BookingStatus.COMPLETED && booking.driverId) {
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
+export async function markArrivedAtPickup(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId } = req["validData"];
+
+        // Get driver ID from authenticated user
+        const driverId = req.user?.userId;
+        if (!driverId) {
+            return next(new BadRequestError("Driver ID not found in authentication"));
+        }
+
+        // Validate booking exists
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        // Verify ownership - booking must be assigned to the authenticated driver
+        if (!booking.driverId || booking.driverId.toString() !== driverId) {
+            return next(new BadRequestError("You can only update status for rides assigned to you"));
+        }
+
+        // Validate current status
+        if (booking.status !== BookingStatus.HEADING_TO_PICKUP) {
+            return next(new BadRequestError(`Booking must be in '${BookingStatus.HEADING_TO_PICKUP}' status to mark as arrived at pickup`));
+        }
+
+        // Update booking status
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            status: BookingStatus.ARRIVED_AT_PICKUP
+        });
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
+export async function startRide(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId } = req["validData"];
+
+        // Get driver ID from authenticated user
+        const driverId = req.user?.userId;
+        if (!driverId) {
+            return next(new BadRequestError("Driver ID not found in authentication"));
+        }
+
+        // Validate booking exists
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        // Verify ownership - booking must be assigned to the authenticated driver
+        if (!booking.driverId || booking.driverId.toString() !== driverId) {
+            return next(new BadRequestError("You can only update status for rides assigned to you"));
+        }
+
+        // Validate current status
+        if (booking.status !== BookingStatus.ARRIVED_AT_PICKUP) {
+            return next(new BadRequestError(`Booking must be in '${BookingStatus.ARRIVED_AT_PICKUP}' status to start the ride`));
+        }
+
+        // Update booking status
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            status: BookingStatus.EN_ROUTE
+        });
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
+export async function completeRide(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId } = req["validData"];
+
+        // Get driver ID from authenticated user
+        const driverId = req.user?.userId;
+        if (!driverId) {
+            return next(new BadRequestError("Driver ID not found in authentication"));
+        }
+
+        // Validate booking exists
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        // Verify ownership - booking must be assigned to the authenticated driver
+        if (!booking.driverId || booking.driverId.toString() !== driverId) {
+            return next(new BadRequestError("You can only update status for rides assigned to you"));
+        }
+
+        // Validate current status
+        if (booking.status !== BookingStatus.EN_ROUTE) {
+            return next(new BadRequestError(`Booking must be in '${BookingStatus.EN_ROUTE}' status to complete the ride`));
+        }
+
+        // Update booking status
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            status: BookingStatus.COMPLETED
+        });
+
+        // Update driver status to available
+        if (booking.driverId) {
             await DriverService.updateById(booking.driverId.toString(), {
                 status: "available"
             });
