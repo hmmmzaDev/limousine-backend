@@ -113,21 +113,18 @@ router.post(
 /**
  * @openapi
  * /admin/driver/getAll:
- *   post:
+ *   get:
  *     summary: Fetch all drivers
  *     tags:
  *       - Admin - Driver
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *                 enum: ["available", "on-trip", "offline"]
- *                 example: "available"
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: ["available", "on-trip", "offline"]
+ *           example: "available"
  *     responses:
  *       '200':
  *         description: Drivers fetched successfully
@@ -173,13 +170,13 @@ router.post(
  *       '404':
  *         description: No records found
  */
-router.post(
+router.get(
     "/getAll",
     authenticateToken,
     requireAdmin,
     validateKeyInputs({
         inputArr: ["-status"],
-        key: "body",
+        key: "query",
     }),
     findAll,
 );
@@ -187,22 +184,17 @@ router.post(
 /**
  * @openapi
  * /admin/driver/getById:
- *   post:
+ *   get:
  *     summary: Fetch driver by ID
  *     tags:
  *       - Admin - Driver
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - id
- *             properties:
- *               id:
- *                 type: string
- *                 example: "67bf1f5867e753b86463b5d1"
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "67bf1f5867e753b86463b5d1"
  *     responses:
  *       '200':
  *         description: Driver fetched successfully
@@ -246,13 +238,13 @@ router.post(
  *       '404':
  *         description: Driver not found
  */
-router.post(
+router.get(
     "/getById",
     authenticateToken,
     requireAdmin,
     validateKeyInputs({
         inputArr: ["id"],
-        key: "body",
+        key: "query",
     }),
     findById,
 );

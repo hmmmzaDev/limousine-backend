@@ -14,18 +14,12 @@ import { authenticateToken, requireDriver } from "../../middlewares/auth";
 /**
  * @openapi
  * /driver/booking/getAssignedRides:
- *   post:
+ *   get:
  *     summary: Fetch assigned rides for the authenticated driver
  *     tags:
  *       - Driver - Booking
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
  *     responses:
  *       '200':
  *         description: Assigned rides fetched successfully
@@ -103,13 +97,13 @@ import { authenticateToken, requireDriver } from "../../middlewares/auth";
  *       '404':
  *         description: Driver not found or no assigned rides
  */
-router.post(
+router.get(
     "/getAssignedRides",
     authenticateToken,
     requireDriver,
     validateKeyInputs({
         inputArr: [],
-        key: "body",
+        key: "query",
     }),
     fetchAssignedRides,
 );

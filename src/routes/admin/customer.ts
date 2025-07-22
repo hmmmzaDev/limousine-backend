@@ -12,16 +12,10 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 /**
  * @openapi
  * /admin/customer/getAll:
- *   post:
+ *   get:
  *     summary: Fetch all customers
  *     tags:
  *       - Admin - Customer
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
  *     responses:
  *       '200':
  *         description: Customers fetched successfully
@@ -59,13 +53,13 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
  *       '404':
  *         description: No records found
  */
-router.post(
+router.get(
     "/getAll",
     authenticateToken,
     requireAdmin,
     validateKeyInputs({
         inputArr: [],
-        key: "body",
+        key: "query",
     }),
     findAll,
 );
@@ -73,22 +67,17 @@ router.post(
 /**
  * @openapi
  * /admin/customer/getById:
- *   post:
+ *   get:
  *     summary: Fetch customer by ID
  *     tags:
  *       - Admin - Customer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - id
- *             properties:
- *               id:
- *                 type: string
- *                 example: "67bf1f5867e753b86463b5d1"
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "67bf1f5867e753b86463b5d1"
  *     responses:
  *       '200':
  *         description: Customer fetched successfully
@@ -124,13 +113,13 @@ router.post(
  *       '404':
  *         description: Customer not found
  */
-router.post(
+router.get(
     "/getById",
     authenticateToken,
     requireAdmin,
     validateKeyInputs({
         inputArr: ["id"],
-        key: "body",
+        key: "query",
     }),
     findById,
 );
