@@ -283,13 +283,13 @@ export async function fetchAssignedRides(
         // Fetch all bookings assigned to this driver
         const assignedRides = await BookingService.findAll({
             driverId: driverId,
-            status: { 
+            status: {
                 $in: [
-                    BookingStatus.ASSIGNED, 
+                    BookingStatus.ASSIGNED,
                     BookingStatus.HEADING_TO_PICKUP,
                     BookingStatus.ARRIVED_AT_PICKUP,
                     BookingStatus.EN_ROUTE
-                ] 
+                ]
             } // Only show active rides
         });
 
@@ -335,6 +335,11 @@ export async function startHeadingToPickup(
         // Update booking status
         const updatedBooking = await BookingService.updateById(bookingId, {
             status: BookingStatus.HEADING_TO_PICKUP
+        });
+
+        // Update driver status to on trip
+        await DriverService.updateById(driverId, {
+            status: DriverStatus.ON_TRIP
         });
 
         return res.json({
