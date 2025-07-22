@@ -33,7 +33,7 @@ const swaggerOptions = {
             // This 'default' value will be used if the Hoppscotch
             // environment variable <<baseUrl>> is not set or not mapped.
             // It ensures the spec is valid and can be used out-of-the-box.
-            default: "http://localhost:5000",
+            default: "https://limousine-backend.vercel.app",
             description:
               "The base URL for the API. In Hoppscotch, this will be replaced by your <<baseUrl>> environment variable.",
           },
