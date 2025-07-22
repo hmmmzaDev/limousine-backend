@@ -15,7 +15,8 @@
 		"test": "vitest",
 		"test:run": "vitest run",
 		"test:watch": "vitest --watch",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"prepare": "husky"
 	},
 	"keywords": [
 		"expressjs",
@@ -62,6 +63,7 @@
 		"@types/swagger-jsdoc": "^6.0.4",
 		"@types/swagger-ui-express": "^4.1.6",
 		"@vitest/coverage-v8": "^2.1.8",
+		"husky": "^9.1.7",
 		"nodemon": "3.1.10",
 		"supertest": "^7.0.0",
 		"tsconfig-paths": "4.2.0",
