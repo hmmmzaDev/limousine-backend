@@ -11,21 +11,18 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
 /**
  * @openapi
  * /admin/booking/getAll:
- *   post:
+ *   get:
  *     summary: Fetch bookings with optional status filtering
  *     tags:
  *       - Admin - Booking
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *                 enum: ["Pending", "Awaiting-Acceptance", "Assigned", "En-Route", "Completed", "Cancelled"]
- *                 example: "Pending"
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: ["pending", "awaiting-acceptance", "assigned", "en-route", "completed", "cancelled"]
+ *           example: "pending"
  *     responses:
  *       '200':
  *         description: Bookings fetched successfully
@@ -104,13 +101,13 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
  *       '404':
  *         description: No records found
  */
-router.post(
+router.get(
     "/getAll",
     authenticateToken,
     requireAdmin,
     validateKeyInputs({
         inputArr: ["-status"],
-        key: "body",
+        key: "query",
     }),
     fetchBookings,
 );
@@ -118,22 +115,17 @@ router.post(
 /**
  * @openapi
  * /admin/booking/getById:
- *   post:
+ *   get:
  *     summary: Fetch booking by ID
  *     tags:
  *       - Admin - Booking
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - id
- *             properties:
- *               id:
- *                 type: string
- *                 example: "67bf1f5867e753b86463b5d1"
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "67bf1f5867e753b86463b5d1"
  *     responses:
  *       '200':
  *         description: Booking fetched successfully
@@ -210,13 +202,13 @@ router.post(
  *       '404':
  *         description: Booking not found
  */
-router.post(
+router.get(
     "/getById",
     authenticateToken,
     requireAdmin,
     validateKeyInputs({
         inputArr: ["id"],
-        key: "body",
+        key: "query",
     }),
     findById,
 );
