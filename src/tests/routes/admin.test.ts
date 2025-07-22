@@ -3,6 +3,7 @@ import { describe, expect, it, beforeAll, afterAll, beforeEach } from 'vitest';
 import app from '../../app';
 import { setupTestDB, cleanupTestDB, disconnectTestDB } from '../setup';
 import { createTestAdminToken, createTestCustomer, createTestDriver, getAuthHeaders } from '../helpers/auth';
+import { DriverStatus } from '../../helpers/constants';
 
 // Setup test database
 setupTestDB();
@@ -89,7 +90,7 @@ describe('Admin Routes', () => {
                         model: 'BMW 7 Series',
                         licensePlate: 'NEW-123'
                     },
-                    status: 'available' as 'available' | 'on_trip' | 'offline'
+                    status: DriverStatus.AVAILABLE
                 };
 
                 const res = await request(app)
@@ -156,8 +157,8 @@ describe('Admin Routes', () => {
                 const adminToken = createTestAdminToken();
 
                 const timestamp = Date.now();
-                await createTestDriver({ email: `available-${timestamp}@test.com`, status: 'available' });
-                await createTestDriver({ email: `offline-${timestamp}@test.com`, status: 'offline' });
+                await createTestDriver({ email: `available-${timestamp}@test.com`, status: DriverStatus.AVAILABLE });
+                await createTestDriver({ email: `offline-${timestamp}@test.com`, status: DriverStatus.OFFLINE });
 
                 // Add a small delay to ensure data is committed
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -165,7 +166,7 @@ describe('Admin Routes', () => {
                 const res = await request(app)
                     .post('/admin/driver/getAll')
                     .set(getAuthHeaders(adminToken))
-                    .send({ status: 'available' });
+                    .send({ status: DriverStatus.AVAILABLE });
 
                 expect(res.statusCode).toBe(200);
                 expect(res.body.status).toBe('success');

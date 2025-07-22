@@ -5,6 +5,7 @@ import {
     NotFoundError,
     UnauthorizedError,
 } from "../helpers/apiError";
+import { DriverStatus } from "../helpers/constants";
 import { DriverService } from "../services";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -32,7 +33,7 @@ export async function addRecord(
             email,
             password: hashedPassword,
             vehicleDetails,
-            status: status || "available", // Default to available if not provided
+            status: status || DriverStatus.AVAILABLE, // Default to available if not provided
         });
 
         return res.json({

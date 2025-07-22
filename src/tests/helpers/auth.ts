@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { CustomerService, DriverService } from '../../services';
+import { DriverStatus } from '../../helpers/constants';
 
 // Test JWT secret (ensure it matches the app's JWT secret)
 const TEST_JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key';
@@ -58,7 +59,7 @@ export const createTestDriver = async (driverData?: {
     email?: string;
     password?: string;
     vehicleDetails?: { model: string; licensePlate: string };
-    status?: 'available' | 'on_trip' | 'offline';
+    status?: typeof DriverStatus[keyof typeof DriverStatus];
 }) => {
     const timestamp = Date.now();
     const defaultData = {
@@ -66,7 +67,7 @@ export const createTestDriver = async (driverData?: {
         email: `driver-${timestamp}-${Math.random().toString(36).substr(2, 5)}@test.com`, // Unique email
         password: 'testpassword123',
         vehicleDetails: { model: 'Mercedes S-Class', licensePlate: `TEST-${timestamp}` },
-        status: 'available' as 'available' | 'on_trip' | 'offline'
+        status: DriverStatus.AVAILABLE
     };
 
     const data = { ...defaultData, ...driverData };

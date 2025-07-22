@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
+import { DriverStatus } from "../helpers/constants";
 
 interface IDriver extends Document {
     id: string;
@@ -10,7 +11,7 @@ interface IDriver extends Document {
         model: string;
         licensePlate: string;
     };
-    status: "available" | "on_trip" | "offline";
+    status: typeof DriverStatus[keyof typeof DriverStatus];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -43,8 +44,8 @@ const DriverSchema = new Schema<IDriver>(
         },
         status: {
             type: String,
-            enum: ["available", "on_trip", "offline"],
-            default: "available",
+            enum: Object.values(DriverStatus),
+            default: DriverStatus.AVAILABLE,
             required: true,
         },
         createdAt: {

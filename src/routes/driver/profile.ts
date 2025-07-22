@@ -62,7 +62,7 @@ import { validateKeyInputs } from "../../middlewares/validate";
  *                           example: "driver@example.com"
  *                         status:
  *                           type: string
- *                           enum: [available, on_trip, offline]
+ *                           enum: [available, on-trip, offline]
  *                           example: "available"
  *                         vehicleDetails:
  *                           type: object

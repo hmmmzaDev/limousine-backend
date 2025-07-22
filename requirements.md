@@ -100,7 +100,7 @@ const DriverSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['available', 'on_trip', 'offline'],
+    enum: ['available', 'on-trip', 'offline'],
     default: 'available'
   }
 });

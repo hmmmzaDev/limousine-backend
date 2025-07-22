@@ -54,7 +54,7 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
  *                     example: "ABC-123"
  *               status:
  *                 type: string
- *                 enum: ["available", "on_trip", "offline"]
+ *                 enum: ["available", "on-trip", "offline"]
  *                 example: "available"
  *     responses:
  *       '200':
@@ -126,7 +126,7 @@ router.post(
  *             properties:
  *               status:
  *                 type: string
- *                 enum: ["available", "on_trip", "offline"]
+ *                 enum: ["available", "on-trip", "offline"]
  *                 example: "available"
  *     responses:
  *       '200':
@@ -290,7 +290,7 @@ router.post(
  *                     example: "XYZ-789"
  *               status:
  *                 type: string
- *                 enum: ["available", "on_trip", "offline"]
+ *                 enum: ["available", "on-trip", "offline"]
  *                 example: "offline"
  *     responses:
  *       '200':

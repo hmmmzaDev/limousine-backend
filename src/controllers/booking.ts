@@ -4,7 +4,7 @@ import {
     InternalServerError,
     NotFoundError,
 } from "../helpers/apiError";
-import { BookingStatus } from "../helpers/constants";
+import { BookingStatus, DriverStatus } from "../helpers/constants";
 import { BookingService, CustomerService, DriverService } from "../services";
 
 export async function submitRideRequest(
@@ -150,7 +150,7 @@ export async function assignDriverAndSetPrice(
             return next(new NotFoundError("Driver not found"));
         }
 
-        if (driver.status !== "available") {
+        if (driver.status !== DriverStatus.AVAILABLE) {
             return next(new BadRequestError("Driver is not available"));
         }
 
@@ -472,7 +472,7 @@ export async function completeRide(
         // Update driver status to available
         if (booking.driverId) {
             await DriverService.updateById(booking.driverId.toString(), {
-                status: "available"
+                status: DriverStatus.AVAILABLE
             });
         }
 

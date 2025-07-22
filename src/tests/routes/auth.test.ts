@@ -4,6 +4,7 @@ import app from '../../app';
 import { setupTestDB, cleanupTestDB, disconnectTestDB } from '../setup';
 import { createTestCustomer, createTestDriver } from '../helpers/auth';
 import { CustomerService, DriverService } from '../../services';
+import { DriverStatus } from '../../helpers/constants';
 import bcrypt from 'bcrypt';
 
 // Setup test database
@@ -153,7 +154,7 @@ describe('Authentication Routes', () => {
                         model: 'Mercedes S-Class',
                         licensePlate: `ABC-${timestamp}`
                     },
-                    status: 'available' as 'available' | 'on_trip' | 'offline'
+                    status: DriverStatus.AVAILABLE
                 };
 
                 // Hash password

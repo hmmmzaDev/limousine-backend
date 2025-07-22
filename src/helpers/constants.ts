@@ -10,3 +10,9 @@ export enum BookingStatus {
   COMPLETED = "completed",
   CANCELLED = "cancelled"
 }
+
+export enum DriverStatus {
+  AVAILABLE = "available",
+  ON_TRIP = "on-trip",
+  OFFLINE = "offline"
+}
