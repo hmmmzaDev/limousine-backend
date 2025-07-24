@@ -4,6 +4,7 @@ import {
     fetchBookings,
     findById,
     assignDriverAndSetPrice,
+    rejectRequest,
 } from "../../controllers/booking";
 import { validateKeyInputs } from "../../middlewares/validate";
 import { authenticateToken, requireAdmin } from "../../middlewares/auth";
@@ -21,7 +22,7 @@ import { authenticateToken, requireAdmin } from "../../middlewares/auth";
  *         required: false
  *         schema:
  *           type: string
- *           enum: ["pending", "awaiting-acceptance", "assigned", "en-route", "completed", "cancelled"]
+ *           enum: ["pending", "awaiting-acceptance", "assigned", "heading-to-pickup", "arrived-at-pickup", "en-route", "completed", "cancelled", "rejected-by-admin"]
  *           example: "pending"
  *     responses:
  *       '200':
@@ -320,6 +321,114 @@ router.post(
         key: "body",
     }),
     assignDriverAndSetPrice,
+);
+
+/**
+ * @openapi
+ * /admin/booking/rejectRequest:
+ *   post:
+ *     summary: Reject a booking request with reason
+ *     tags:
+ *       - Admin - Booking
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - bookingId
+ *               - rejectionReason
+ *             properties:
+ *               bookingId:
+ *                 type: string
+ *                 example: "67bf1f5867e753b86463b5d1"
+ *               rejectionReason:
+ *                 type: string
+ *                 maxLength: 40
+ *                 example: "Route not available at requested time"
+ *     responses:
+ *       '200':
+ *         description: Booking rejected successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "67bf1f5867e753b86463b5d1"
+ *                     customerId:
+ *                       type: object
+ *                     driverId:
+ *                       type: object
+ *                       nullable: true
+ *                     startLocation:
+ *                       type: object
+ *                     finalLocation:
+ *                       type: object
+ *                     stops:
+ *                       type: array
+ *                     numberOfPassengers:
+ *                       type: number
+ *                     numberOfLuggage:
+ *                       type: number
+ *                     note:
+ *                       type: string
+ *                       nullable: true
+ *                     contactInfo:
+ *                       type: string
+ *                     rideTime:
+ *                       type: string
+ *                       format: date-time
+ *                     finalPrice:
+ *                       type: number
+ *                       nullable: true
+ *                     rejectionReason:
+ *                       type: string
+ *                       example: "Route not available at requested time"
+ *                     status:
+ *                       type: string
+ *                       example: "rejected-by-admin"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "Booking must be in 'pending' status to reject"
+ *       '404':
+ *         description: Booking not found
+ */
+router.post(
+    "/rejectRequest",
+    authenticateToken,
+    requireAdmin,
+    validateKeyInputs({
+        inputArr: ["bookingId", "rejectionReason"],
+        key: "body",
+    }),
+    rejectRequest,
 );
 
 export default router;

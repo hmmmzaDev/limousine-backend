@@ -8,7 +8,8 @@ export enum BookingStatus {
   ARRIVED_AT_PICKUP = "arrived-at-pickup",
   EN_ROUTE = "en-route",
   COMPLETED = "completed",
-  CANCELLED = "cancelled"
+  CANCELLED = "cancelled",
+  REJECTED_BY_ADMIN = "rejected-by-admin"
 }
 
 export enum DriverStatus {

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import {
     BadRequestError,
-    InternalServerError,
     NotFoundError,
 } from "../helpers/apiError";
 import { BookingStatus, DriverStatus } from "../helpers/constants";
@@ -164,6 +163,48 @@ export async function assignDriverAndSetPrice(
             driverId,
             finalPrice,
             status: BookingStatus.AWAITING_ACCEPTANCE
+        });
+
+        return res.json({
+            status: "success",
+            data: updatedBooking,
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
+export async function rejectRequest(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { bookingId, rejectionReason } = req["validData"];
+
+        // Validate booking exists and is in correct status
+        const booking = await BookingService.findById(bookingId);
+        if (!booking) {
+            return next(new NotFoundError("Booking not found"));
+        }
+
+        if (booking.status !== BookingStatus.PENDING) {
+            return next(new BadRequestError(`Booking must be in '${BookingStatus.PENDING}' status to reject`));
+        }
+
+        // Validate rejection reason
+        if (!rejectionReason || rejectionReason.trim().length === 0) {
+            return next(new BadRequestError("Rejection reason is required"));
+        }
+
+        if (rejectionReason.length > 40) {
+            return next(new BadRequestError("Rejection reason must be 40 characters or less"));
+        }
+
+        // Update booking with rejection
+        const updatedBooking = await BookingService.updateById(bookingId, {
+            rejectionReason: rejectionReason.trim(),
+            status: BookingStatus.REJECTED_BY_ADMIN
         });
 
         return res.json({

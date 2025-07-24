@@ -27,6 +27,7 @@ interface IBooking extends Document {
     contactInfo: string;
     rideTime: Date;
     finalPrice?: number;
+    rejectionReason?: string;
     status: typeof BookingStatus[keyof typeof BookingStatus];
     createdAt: Date;
     updatedAt: Date;
@@ -113,6 +114,11 @@ const BookingSchema = new Schema<IBooking>(
         finalPrice: {
             type: Number,
             default: null,
+        },
+        rejectionReason: {
+            type: String,
+            default: null,
+            maxlength: 40,
         },
         status: {
             type: String,
