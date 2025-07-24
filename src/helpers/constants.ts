@@ -17,3 +17,8 @@ export enum DriverStatus {
   ON_TRIP = "on-trip",
   OFFLINE = "offline"
 }
+
+export enum CustomerStatus {
+  VERIFIED = "verified",
+  UNVERIFIED = "unverified"
+}

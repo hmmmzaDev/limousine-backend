@@ -1,11 +1,13 @@
 import mongoose, { Schema, Document } from "mongoose";
 import autopopulate from "mongoose-autopopulate";
+import { CustomerStatus } from "../helpers/constants";
 
 interface ICustomer extends Document {
     id: string;
     name: string;
     email: string;
     password: string;
+    status: typeof CustomerStatus[keyof typeof CustomerStatus];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -25,6 +27,12 @@ const CustomerSchema = new Schema<ICustomer>(
             type: String,
             required: true,
             select: false,
+        },
+        status: {
+            type: String,
+            enum: Object.values(CustomerStatus),
+            default: CustomerStatus.UNVERIFIED,
+            required: true,
         },
         createdAt: {
             type: Date,
