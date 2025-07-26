@@ -68,8 +68,7 @@ export async function verifyOtp(
         userType: "admin",
         role: "admin",
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" },
+      process.env.JWT_SECRET
     );
 
     // Delete the used OTP for security

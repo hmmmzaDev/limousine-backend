@@ -153,8 +153,7 @@ export async function customerLogin(
                 userType: "customer",
                 role: "customer",
             },
-            process.env.JWT_SECRET!,
-            { expiresIn: "24h" }
+            process.env.JWT_SECRET!
         );
 
         // Remove password from response and ensure 'id' field is present

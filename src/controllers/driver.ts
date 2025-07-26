@@ -162,8 +162,7 @@ export async function driverLogin(
                 userType: "driver",
                 role: "driver",
             },
-            process.env.JWT_SECRET!,
-            { expiresIn: "24h" }
+            process.env.JWT_SECRET!
         );
 
         // Remove password from response and ensure 'id' field is present

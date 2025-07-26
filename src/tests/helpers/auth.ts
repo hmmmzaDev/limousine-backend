@@ -14,7 +14,7 @@ export const generateTestToken = (payload: {
     userType: 'customer' | 'driver';
     role: 'customer' | 'driver' | 'admin';
 }) => {
-    return jwt.sign(payload, TEST_JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign(payload, TEST_JWT_SECRET);
 };
 
 // Create test customer and return token
