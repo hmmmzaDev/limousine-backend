@@ -230,8 +230,7 @@ export async function acceptRideQuote(
             return next(new BadRequestError("Customer ID not found in authentication"));
         }
 
-        // Validate booking exists and is in correct status
-        const booking = await BookingService.findById(bookingId);
+        const booking = await BookingService.findById(bookingId,{}, { autopopulate: false });
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
         }
@@ -274,7 +273,7 @@ export async function cancelBooking(
         }
 
         // Validate booking exists
-        const booking = await BookingService.findById(bookingId);
+        const booking = await BookingService.findById(bookingId,{}, { autopopulate: false });
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
         }
