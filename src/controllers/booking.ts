@@ -357,7 +357,7 @@ export async function startHeadingToPickup(
         }
 
         // Validate booking exists
-        const booking = await BookingService.findById(bookingId);
+        const booking = await BookingService.findById(bookingId, {}, { autopopulate: false });
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
         }
@@ -406,7 +406,7 @@ export async function markArrivedAtPickup(
         }
 
         // Validate booking exists
-        const booking = await BookingService.findById(bookingId);
+        const booking = await BookingService.findById(bookingId, {}, { autopopulate: false });
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
         }
@@ -450,7 +450,7 @@ export async function startRide(
         }
 
         // Validate booking exists
-        const booking = await BookingService.findById(bookingId);
+        const booking = await BookingService.findById(bookingId, {}, { autopopulate: false });
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
         }
@@ -494,7 +494,7 @@ export async function completeRide(
         }
 
         // Validate booking exists
-        const booking = await BookingService.findById(bookingId);
+        const booking = await BookingService.findById(bookingId, {}, { autopopulate: false });
         if (!booking) {
             return next(new NotFoundError("Booking not found"));
         }
