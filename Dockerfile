@@ -1,26 +1,30 @@
 # Use Node.js official image
 FROM node:18-alpine
 
+# Install pnpm globally
+RUN npm install -g pnpm
+
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json and pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the app's source code
 COPY . .
 
 # Build the TypeScript app
-RUN npm run build
+RUN pnpm run build
 
-# delete the src folder
+# Remove source files and dev dependencies to reduce image size
 RUN rm -rf src
+RUN pnpm prune --prod
 
 # Expose the port the app runs on
 EXPOSE 5000
 
 # Start the app
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
