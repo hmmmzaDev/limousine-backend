@@ -16,7 +16,8 @@
 		"test:run": "vitest run",
 		"test:watch": "vitest --watch",
 		"test:coverage": "vitest run --coverage",
-		"prepare": "husky"
+		"prepare": "husky",
+		"type-check": "tsc --noEmit"
 	},
 	"keywords": [
 		"expressjs",
