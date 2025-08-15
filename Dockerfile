@@ -21,7 +21,6 @@ RUN pnpm run build
 
 # Remove source files and dev dependencies to reduce image size
 RUN rm -rf src
-RUN pnpm prune --prod
 
 # Expose the port the app runs on
 EXPOSE 5000
