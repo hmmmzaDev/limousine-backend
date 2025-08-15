@@ -5,6 +5,7 @@ import {
 } from "../helpers/apiError";
 import { BookingStatus, DriverStatus } from "../helpers/constants";
 import { BookingService, CustomerService, DriverService } from "../services";
+import { PaymentService } from "../services/paymentService";
 
 export async function submitRideRequest(
     req: Request,
@@ -222,12 +223,17 @@ export async function acceptRideQuote(
     next: NextFunction,
 ) {
     try {
-        const { bookingId } = req["validData"];
+        const { bookingId, paymentIntentId } = req["validData"];
 
         // Get customer ID from authenticated user
         const customerId = req.user?.userId;
         if (!customerId) {
             return next(new BadRequestError("Customer ID not found in authentication"));
+        }
+
+        // Validate paymentIntentId is provided
+        if (!paymentIntentId) {
+            return next(new BadRequestError("Payment intent ID is required"));
         }
 
         const booking = await BookingService.findById(bookingId, {}, { autopopulate: false });
@@ -244,9 +250,13 @@ export async function acceptRideQuote(
             return next(new BadRequestError(`Booking must be in '${BookingStatus.AWAITING_ACCEPTANCE}' status to accept quote`));
         }
 
-        // Update booking status to Assigned
+        // Verify payment and create payment record
+        const payment = await PaymentService.verifyAndCreatePayment(paymentIntentId, customerId);
+
+        // Update booking status to Assigned and link payment
         const updatedBooking = await BookingService.updateById(bookingId, {
-            status: BookingStatus.ASSIGNED
+            status: BookingStatus.ASSIGNED,
+            paymentId: payment.id
         });
 
         return res.json({

@@ -12,6 +12,7 @@ import CustomerModel from "../models/customer";
 import DriverModel from "../models/driver";
 import BookingModel from "../models/booking";
 import AdminOtpModel from "../models/adminOtp";
+import PaymentModel from "../models/payment";
 
 function main<T extends Document>(Model: Model<T>) {
   function count(filter: FilterQuery<T> = {}) {
@@ -98,3 +99,4 @@ export const CustomerService = main(CustomerModel);
 export const DriverService = main(DriverModel);
 export const BookingService = main(BookingModel);
 export const AdminOtpService = main(AdminOtpModel);
+export const PaymentServiceModel = main(PaymentModel);

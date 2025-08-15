@@ -32,6 +32,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@types/stripe": "^8.0.417",
 		"axios": "1.10.0",
 		"bcrypt": "6.0.0",
 		"cloudinary": "2.7.0",
@@ -48,6 +49,7 @@
 		"multer": "2.0.1",
 		"multer-storage-cloudinary": "4.0.0",
 		"nodemailer": "7.0.3",
+		"stripe": "^18.4.0",
 		"swagger-jsdoc": "6.2.8",
 		"swagger-ui-express": "5.0.1",
 		"typescript": "5.8.3"

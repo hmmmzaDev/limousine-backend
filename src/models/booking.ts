@@ -18,6 +18,7 @@ interface IBooking extends Document {
     id: string;
     customerId: Schema.Types.ObjectId;
     driverId?: Schema.Types.ObjectId;
+    paymentId?: Schema.Types.ObjectId;
     startLocation: ILocation;
     finalLocation: ILocation;
     stops: IStop[];
@@ -74,6 +75,12 @@ const BookingSchema = new Schema<IBooking>(
         driverId: {
             type: Schema.Types.ObjectId,
             ref: "Driver",
+            autopopulate: true,
+            default: null,
+        },
+        paymentId: {
+            type: Schema.Types.ObjectId,
+            ref: "Payment",
             autopopulate: true,
             default: null,
         },

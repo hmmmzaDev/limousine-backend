@@ -218,7 +218,7 @@ router.post(
  * @openapi
  * /customer/booking/acceptQuote:
  *   post:
- *     summary: Accept ride quote
+ *     summary: Accept ride quote with payment verification
  *     tags:
  *       - Customer - Booking
  *     security:
@@ -231,10 +231,15 @@ router.post(
  *             type: object
  *             required:
  *               - bookingId
+ *               - paymentIntentId
  *             properties:
  *               bookingId:
  *                 type: string
  *                 example: "67bf1f5867e753b86463b5d1"
+ *               paymentIntentId:
+ *                 type: string
+ *                 example: "pi_3ABC123def456GHI"
+ *                 description: "Stripe PaymentIntent ID from successful payment"
  *     responses:
  *       '200':
  *         description: Ride quote accepted successfully
@@ -343,7 +348,7 @@ router.post(
     authenticateToken,
     requireCustomer,
     validateKeyInputs({
-        inputArr: ["bookingId"],
+        inputArr: ["bookingId", "paymentIntentId"],
         key: "body",
     }),
     acceptRideQuote,
