@@ -1,2 +1,3 @@
 - use pnpm as the package-manager for the current project
 - run `pnpm run type-check` after doing any task
+- the variables will be named in camelCase
