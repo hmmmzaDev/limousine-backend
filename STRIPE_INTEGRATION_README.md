@@ -39,8 +39,8 @@ Content-Type: application/json
 {
   "status": "success",
   "data": {
-    "client_secret": "pi_xxx_secret_xxx",
-    "payment_intent_id": "pi_xxx"
+    "clientSecret": "pi_xxx_secret_xxx",
+    "paymentIntentId": "pi_xxx"
   }
 }
 ```
@@ -109,7 +109,7 @@ Authorization: Bearer <customer_jwt_token>
 ## Payment Flow
 
 1. **Create Payment Intent**: Frontend calls `/customer/payment/createIntent` with the ride amount
-2. **Process Payment**: Frontend uses Stripe Elements with the `client_secret` to collect payment
+2. **Process Payment**: Frontend uses Stripe Elements with the `clientSecret` to collect payment
 3. **Accept Quote**: After successful payment, frontend calls `/customer/booking/acceptQuote` with `paymentIntentId`
 4. **Verification**: Backend verifies payment with Stripe and creates payment record
 5. **Complete Booking**: Booking is marked as "Assigned" and linked to the payment
@@ -167,3 +167,4 @@ Use Stripe's test card numbers:
 - Amounts are stored in dollars (converted from Stripe's cents)
 - No refund handling implemented (rides only proceed after payment)
 - PaymentIntents are created immediately but only stored after verification
+- API responses use camelCase naming convention (clientSecret, paymentIntentId)

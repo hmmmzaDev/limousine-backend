@@ -22,8 +22,8 @@ export async function createPaymentIntent(
         return res.json({
             status: "success",
             data: {
-                client_secret: paymentIntent.client_secret,
-                payment_intent_id: paymentIntent.payment_intent_id,
+                clientSecret: paymentIntent.clientSecret,
+                paymentIntentId: paymentIntent.paymentIntentId,
             },
         });
     } catch (error) {

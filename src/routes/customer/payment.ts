@@ -40,10 +40,10 @@ const router = express.Router();
  *                 data:
  *                   type: object
  *                   properties:
- *                     client_secret:
+ *                     clientSecret:
  *                       type: string
  *                       description: Client secret for frontend payment processing
- *                     payment_intent_id:
+ *                     paymentIntentId:
  *                       type: string
  *                       description: Stripe PaymentIntent ID
  *       400:

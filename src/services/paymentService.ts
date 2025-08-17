@@ -16,7 +16,7 @@ export class PaymentService {
     static async createPaymentIntent(
         amount: number,
         currency: string = "USD"
-    ): Promise<{ client_secret: string; payment_intent_id: string }> {
+    ): Promise<{ clientSecret: string; paymentIntentId: string }> {
         try {
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: Math.round(amount * 100), // Convert to cents
@@ -27,8 +27,8 @@ export class PaymentService {
             });
 
             return {
-                client_secret: paymentIntent.client_secret!,
-                payment_intent_id: paymentIntent.id,
+                clientSecret: paymentIntent.client_secret!,
+                paymentIntentId: paymentIntent.id,
             };
         } catch (error) {
             throw new BadRequestError(`Failed to create payment intent: ${error.message}`);
