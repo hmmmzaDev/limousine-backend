@@ -5,10 +5,11 @@ import app from "./app";
 import http from "http";
 const server = http.createServer(app);
 
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || "5000", 10);
+const HOST = process.env.HOST || "0.0.0.0";
 if (process.env.NODE_ENV !== "production") {
-  server.listen(PORT, () => {
-    console.log(`server listening on port ${PORT}`);
+  server.listen(PORT, HOST, () => {
+    console.log(`server listening on http://${HOST}:${PORT}`);
   });
 }
 
