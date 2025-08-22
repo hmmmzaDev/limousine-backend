@@ -8,6 +8,18 @@ import {
 } from "../../controllers/customer";
 import { validateKeyInputs } from "../../middlewares/validate";
 import { authenticateToken, requireAdmin } from "../../middlewares/auth";
+import { sendFcmNotification } from "../../services/notification/providers/fcm";
+import { Request, Response, NextFunction } from "express";
+
+async function notifyController(req: Request, res: Response | any, next: NextFunction) {
+    try {
+        const { title, message, fcmToken } = req["validData"];
+        const result = await sendFcmNotification({ token: fcmToken, title, body: message });
+        return res.json({ status: "success", data: { messageId: result } });
+    } catch (error) {
+        next(error);
+    }
+}
 
 /**
  * @openapi
@@ -247,6 +259,78 @@ router.post(
         key: "body",
     }),
     deleteById,
+);
+
+/**
+ * @openapi
+ * /admin/customer/notify:
+ *   post:
+ *     summary: Send an FCM notification to a device token
+ *     tags:
+ *       - Admin - Customer
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - message
+ *               - fcmToken
+ *             properties:
+ *               title:
+ *                 type: string
+ *               message:
+ *                 type: string
+ *               fcmToken:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Notification sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     messageId:
+ *                       type: string
+ *                       example: "projects/123456/messages/0:1700000000000000%abcdef"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "you have missed some inputs in body"
+ *       '401':
+ *         description: Unauthorized
+ *       '403':
+ *         description: Forbidden
+ */
+router.post(
+    "/notify",
+    authenticateToken,
+    requireAdmin,
+    validateKeyInputs({
+        inputArr: ["title", "message", "fcmToken"],
+        key: "body",
+    }),
+    notifyController,
 );
 
 export default router;

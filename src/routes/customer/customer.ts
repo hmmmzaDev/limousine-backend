@@ -3,8 +3,10 @@ const router = express.Router();
 import {
     signup,
     customerLogin,
+    postFcmToken,
 } from "../../controllers/customer";
 import { validateKeyInputs } from "../../middlewares/validate";
+import { authenticateToken, requireCustomer } from "../../middlewares/auth";
 
 /**
  * @openapi
@@ -174,6 +176,89 @@ router.post(
         key: "body",
     }),
     customerLogin,
+);
+
+/**
+ * @openapi
+ * /customer/profile/postFcmToken:
+ *   post:
+ *     summary: Save or update the customer's FCM token
+ *     tags:
+ *       - Customer
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - fcmToken
+ *             properties:
+ *               fcmToken:
+ *                 type: string
+ *                 example: "fcm_device_token_here"
+ *     responses:
+ *       '200':
+ *         description: Token saved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "67bf1f5867e753b86463b5d1"
+ *                     name:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: "john.doe@example.com"
+ *                     fcmToken:
+ *                       type: string
+ *                       example: "fcm_device_token_here"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-01T12:00:00.000Z"
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-01T12:00:00.000Z"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "you have missed some inputs in body"
+ *       '401':
+ *         description: Unauthorized
+ */
+router.post(
+    "/postFcmToken",
+    authenticateToken,
+    requireCustomer,
+    validateKeyInputs({
+        inputArr: ["fcmToken"],
+        key: "body",
+    }),
+    postFcmToken,
 );
 
 export default router;

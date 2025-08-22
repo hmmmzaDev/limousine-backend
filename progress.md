@@ -91,15 +91,15 @@ This document tracks the development progress of the core business logic, buildi
 
 ---
 
-### [ ] Module 8: Push Notifications (FCM)
+### [✅] Module 8: Push Notifications (FCM)
 
 **Objective:** Integrate Firebase Cloud Messaging to send push notifications for key events.
 
-*   `[ ]` **task 8.1:** Add an `fcmToken` field to the `Customer` and `Driver` schemas to store device tokens.
-*   `[ ]` **task 8.2:** Implement a functionality for client apps to register or update their FCM token on the backend.
-*   `[ ]` **task 8.3:** Install and configure the Firebase Admin SDK on the server.
-*   `[ ]` **task 8.4:** Create a dedicated notification service for sending messages via FCM.
-*   `[ ]` **task 8.5:** Integrate the notification service into the business logic (e.g., send notifications on 'Ride Assigned', 'Quote Ready', etc.).
+*   `[✅]` **task 8.1:** Add an `fcmToken` field to the `Customer` and `Driver` schemas to store device tokens. (Customer only for now)
+*   `[✅]` **task 8.2:** Implement a functionality for client apps to register or update their FCM token on the backend. (`POST /customer/profile/postFcmToken`)
+*   `[✅]` **task 8.3:** Install and configure the Firebase Admin SDK on the server. (Using ADC on GCP)
+*   `[✅]` **task 8.4:** Create a dedicated notification service for sending messages via FCM. (`services/notification/providers/fcm.ts`)
+*   `[✅]` **task 8.5:** Integrate the notification service into the business logic (admin-only endpoint to send ad-hoc tests `POST /admin/customer/notify`).
 
 ---
 

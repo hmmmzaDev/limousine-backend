@@ -9,6 +9,29 @@ import { CustomerService } from "../services";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+export async function postFcmToken(
+    req: Request,
+    res: Response | any,
+    next: NextFunction,
+) {
+    try {
+        const { fcmToken } = req["validData"];
+
+        if (!req.user) {
+            return next(new UnauthorizedError("Authentication required"));
+        }
+
+        const updated = await CustomerService.updateById(req.user.userId, { fcmToken });
+
+        return res.json({
+            status: "success",
+            data: await CustomerService.findById(req.user.userId),
+        });
+    } catch (error) {
+        return next(new BadRequestError(error.message));
+    }
+}
+
 export async function signup(
     req: Request,
     res: Response | any,

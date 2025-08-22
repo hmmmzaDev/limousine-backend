@@ -7,6 +7,7 @@ interface ICustomer extends Document {
     name: string;
     email: string;
     password: string;
+    fcmToken?: string;
     status: typeof CustomerStatus[keyof typeof CustomerStatus];
     createdAt: Date;
     updatedAt: Date;
@@ -27,6 +28,11 @@ const CustomerSchema = new Schema<ICustomer>(
             type: String,
             required: true,
             select: false,
+        },
+        fcmToken: {
+            type: String,
+            required: false,
+            default: undefined,
         },
         status: {
             type: String,
