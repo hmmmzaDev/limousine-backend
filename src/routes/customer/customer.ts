@@ -24,6 +24,7 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *             required:
  *               - name
  *               - email
+ *               - phoneNumber
  *               - password
  *             properties:
  *               name:
@@ -33,6 +34,9 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *                 type: string
  *                 format: email
  *                 example: "john.doe@example.com"
+ *               phoneNumber:
+ *                 type: string
+ *                 example: "+1234567890"
  *               password:
  *                 type: string
  *                 format: password
@@ -61,6 +65,9 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
  *                       type: string
  *                       format: email
  *                       example: "john.doe@example.com"
+ *                     phoneNumber:
+ *                       type: string
+ *                       example: "+1234567890"
  *                     createdAt:
  *                       type: string
  *                       format: date-time
@@ -86,7 +93,7 @@ import { authenticateToken, requireCustomer } from "../../middlewares/auth";
 router.post(
     "/signup",
     validateKeyInputs({
-        inputArr: ["name", "email", "password"],
+        inputArr: ["name", "email", "phoneNumber", "password"],
         key: "body",
     }),
     signup,

@@ -6,6 +6,7 @@ interface ICustomer extends Document {
     id: string;
     name: string;
     email: string;
+    phoneNumber: string;
     password: string;
     fcmToken?: string;
     status: typeof CustomerStatus[keyof typeof CustomerStatus];
@@ -23,6 +24,10 @@ const CustomerSchema = new Schema<ICustomer>(
             type: String,
             required: true,
             unique: true,
+        },
+        phoneNumber: {
+            type: String,
+            required: true,
         },
         password: {
             type: String,

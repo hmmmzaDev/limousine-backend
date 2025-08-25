@@ -38,7 +38,7 @@ export async function signup(
     next: NextFunction,
 ) {
     try {
-        const { name, email, password } = req["validData"];
+        const { name, email, phoneNumber, password } = req["validData"];
         const existingCustomer = await CustomerService.findOne({
             email,
         });
@@ -53,6 +53,7 @@ export async function signup(
         const createdCustomer = await CustomerService.create({
             name,
             email,
+            phoneNumber,
             password: hashedPassword,
         });
 
