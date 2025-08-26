@@ -150,6 +150,43 @@ export async function deleteById(
   }
 }
 
+export async function updateProfile(
+  req: Request,
+  res: Response | any,
+  next: NextFunction,
+) {
+  try {
+    const { name, phoneNumber } = req["validData"];
+
+    if (!req.user) {
+      return next(new UnauthorizedError("Authentication required"));
+    }
+
+    // Check if at least one field is provided
+    if (!name && !phoneNumber) {
+      return next(new BadRequestError("At least one field (name or phoneNumber) must be provided"));
+    }
+
+    // Prepare update object with only provided fields
+    const updateData: any = {};
+    if (name) updateData.name = name;
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+
+    // Update the customer profile
+    await CustomerService.updateById(req.user.userId, updateData);
+
+    // Return updated customer data
+    const updatedCustomer = await CustomerService.findById(req.user.userId);
+
+    return res.json({
+      status: "success",
+      data: updatedCustomer,
+    });
+  } catch (error) {
+    return next(new BadRequestError(error.message));
+  }
+}
+
 export async function customerLogin(
   req: Request,
   res: Response,

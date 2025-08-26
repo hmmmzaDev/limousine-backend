@@ -4,6 +4,7 @@ import {
     signup,
     customerLogin,
     postFcmToken,
+    updateProfile,
 } from "../../controllers/customer";
 import { validateKeyInputs } from "../../middlewares/validate";
 import { authenticateToken, requireCustomer } from "../../middlewares/auth";
@@ -266,6 +267,101 @@ router.post(
         key: "body",
     }),
     postFcmToken,
+);
+
+/**
+ * @openapi
+ * /customer/profile/updateProfile:
+ *   post:
+ *     summary: Update customer profile (name and/or phone number)
+ *     tags:
+ *       - Customer
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "John Doe Updated"
+ *               phoneNumber:
+ *                 type: string
+ *                 example: "+1234567890"
+ *     responses:
+ *       '200':
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "67bf1f5867e753b86463b5d1"
+ *                     name:
+ *                       type: string
+ *                       example: "John Doe Updated"
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: "john.doe@example.com"
+ *                     phoneNumber:
+ *                       type: string
+ *                       example: "+1234567890"
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-01T12:00:00.000Z"
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-01-01T13:00:00.000Z"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "At least one field (name or phoneNumber) must be provided"
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "error"
+ *                 message:
+ *                   type: string
+ *                   example: "Authentication required"
+ */
+router.post(
+    "/updateProfile",
+    authenticateToken,
+    requireCustomer,
+    validateKeyInputs({
+        inputArr: ["-name", "-phoneNumber"],
+        key: "body",
+    }),
+    updateProfile,
 );
 
 export default router;
